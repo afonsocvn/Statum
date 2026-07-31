@@ -1,0 +1,17 @@
+{
+  "name": "statum",
+  "version": "0.1.0",
+  "description": "Jogo web multiplayer de simulacao geopolitica e economica",
+  "private": true,
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.9.1",
+    "dotenv": "^16.4.7",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2"
+  }
+}
