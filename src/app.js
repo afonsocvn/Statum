@@ -6,6 +6,7 @@ const { nationalCurrencyName } = require('./lib/currency');
 const indexRouter = require('./routes/index');
 const authRouter = require('./routes/auth');
 const countriesRouter = require('./routes/countries');
+const companiesRouter = require('./routes/companies');
 
 const app = express();
 
@@ -44,6 +45,7 @@ app.use((req, res, next) => {
 
 app.use('/', authRouter);
 app.use('/', countriesRouter);
+app.use('/', companiesRouter);
 app.use('/', indexRouter);
 
 app.use((req, res) => {

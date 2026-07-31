@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Statum - Start a company</title>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <%- include('partials/nav') %>
+
+  <main>
+    <h1>Start a new company</h1>
+    <p>Cost to start: <%= creationCost %> of your national currency.</p>
+
+    <% if (error) { %>
+      <p style="color: red;"><%= error %></p>
+    <% } %>
+
+    <form action="/companies" method="POST">
+      <div>
+        <label for="good_key">Good to produce</label>
+        <select id="good_key" name="good_key" required>
+          <optgroup label="Raw materials">
+            <% goods.filter(function(g) { return g.category === 'raw'; }).forEach(function(good) { %>
+              <option value="<%= good.key %>"><%= good.name %></option>
+            <% }) %>
+          </optgroup>
+          <optgroup label="Factory goods">
+            <% goods.filter(function(g) { return g.category === 'factory'; }).forEach(function(good) { %>
+              <option value="<%= good.key %>"><%= good.name %></option>
+            <% }) %>
+          </optgroup>
+        </select>
+      </div>
+      <div>
+        <label for="region_id">Region</label>
+        <select id="region_id" name="region_id" required>
+          <% regions.forEach(function(region) { %>
+            <option value="<%= region.id %>"><%= region.name %></option>
+          <% }) %>
+        </select>
+      </div>
+      <div>
+        <label for="salary">Salary per work shift (in your national currency)</label>
+        <input type="number" id="salary" name="salary" min="0" value="10" required>
+      </div>
+      <button type="submit">Start company</button>
+    </form>
+  </main>
+</body>
+</html>

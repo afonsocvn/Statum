@@ -52,9 +52,28 @@ Este ficheiro regista decisões importantes tomadas ao longo do desenvolvimento,
 - Saldo inicial no registo: 0 Gold, 100 na moeda nacional do país escolhido.
 - Sem forma de ganhar/gastar ainda (isso vem com Empresas e Mercado). Saldos visíveis na barra de navegação.
 
+## 2026-07-31 — Empresas/Produção
+
+Decididas contigo:
+- 4 matérias-primas: Grain, Iron, Oil, Timber.
+- Q1-Q6 (não Q1-Q5): o nível de qualidade da fábrica define quantas unidades cada trabalhador produz por turno.
+- Trabalho: uma ação de trabalho por dia (cooldown de 24h) por trabalhador.
+- Dono cria a empresa e contrata trabalhadores; trabalhadores candidatam-se a vagas abertas.
+
+Assumidas por mim (números concretos de balanceamento, a ajustar quando quiseres):
+- Cada matéria-prima tem um produto de fábrica correspondente (1:1): Grain→Food, Iron→Weapons, Oil→Fuel, Timber→Furniture. Lista em `src/db/goods-data.js`.
+- Fábricas ainda **não consomem** a matéria-prima como input — produzem diretamente do trabalho, sem depender de comprar a matéria-prima a outra empresa. Essa dependência real só faz sentido quando existir Mercado (para comprar/vender entre empresas); por agora é só uma distinção cosmética (raw vs factory).
+- Produção por turno = nível de qualidade × 10 unidades (Q1 = 10, Q6 = 60).
+- Custo para criar uma empresa: 50 na moeda nacional do dono.
+- Custo de upgrade de qualidade: nível atual × 100 na moeda nacional do dono (Q1→Q2 = 100, Q2→Q3 = 200, etc.).
+- Cada empresa tem exatamente 1 vaga de trabalho (não várias) — simplificação para esta primeira versão; pode expandir-se depois.
+- Empresa só pode ser criada num país igual à cidadania do dono (mas em qualquer uma das 6 regiões desse país).
+- Salário definido pelo dono na criação da empresa, fixo (sem opção de alterar depois, por agora).
+- Um jogador só pode ter 1 emprego ativo ao mesmo tempo (em qualquer empresa).
+- Sem limite ao número de empresas que um jogador pode possuir.
+
 ## Próximas decisões pendentes
 
-- Estrutura do sistema de empresas/produção (Q1-Q5, múltiplos recursos).
 - Regras do mercado.
 - Comportamento dos bots (económicos, militares, políticos).
 - Sistema militar/guerra.
