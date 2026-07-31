@@ -23,7 +23,15 @@ app.use(session({
 
 app.use((req, res, next) => {
   res.locals.currentUser = req.session.userId
-    ? db.prepare('SELECT id, username FROM users WHERE id = ?').get(req.session.userId)
+    ? db
+        .prepare(
+          `SELECT users.id, users.username, countries.name AS countryName, countries.code AS countryCode, regions.name AS regionName
+           FROM users
+           JOIN countries ON countries.id = users.country_id
+           JOIN regions ON regions.id = users.region_id
+           WHERE users.id = ?`
+        )
+        .get(req.session.userId)
     : null;
   next();
 });

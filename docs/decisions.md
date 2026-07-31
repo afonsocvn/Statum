@@ -33,9 +33,14 @@ Este ficheiro regista decisões importantes tomadas ao longo do desenvolvimento,
 - Por agora só têm nome e se são capital — sem recursos naturais nem outros dados de jogo associados.
 - Pré-requisito identificado para: cidadania (próximo passo), depois moeda, depois empresas/produção (nível "completo" estilo e-Sim, com Q1-Q5 e múltiplos recursos — a desenhar em detalhe nesse passo).
 
+## 2026-07-31 — Cidadania
+
+- País de cidadania escolhido no próprio formulário de registo (obrigatório).
+- Região inicial é sempre a Capital do país escolhido, atribuída automaticamente (sem escolha manual).
+- Cidadania fixa por agora — sem funcionalidade para mudar de país depois do registo.
+
 ## Próximas decisões pendentes
 
-- Sistema de cidadania (ligar utilizador a país + região).
 - Moeda simples do jogo.
 - Estrutura do sistema de empresas/produção (Q1-Q5, múltiplos recursos).
 - Regras do mercado.

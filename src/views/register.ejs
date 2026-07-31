@@ -23,6 +23,20 @@
         <label for="password">Password</label>
         <input type="password" id="password" name="password" required minlength="8">
       </div>
+      <div>
+        <label for="country_id">País de cidadania</label>
+        <select id="country_id" name="country_id" required>
+          <option value="" disabled <%= countryId === '' ? 'selected' : '' %>>Escolhe um país</option>
+          <% byContinent.forEach(function(group) { %>
+            <optgroup label="<%= group.continent %>">
+              <% group.countries.forEach(function(country) { %>
+                <option value="<%= country.id %>" <%= String(countryId) === String(country.id) ? 'selected' : '' %>><%= country.name %></option>
+              <% }) %>
+            </optgroup>
+          <% }) %>
+        </select>
+        <p>Vais começar na capital. A cidadania não pode ser alterada por agora.</p>
+      </div>
       <button type="submit">Registar</button>
     </form>
 
