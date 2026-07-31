@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <title>Statum - Entrar</title>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <%- include('partials/nav') %>
+
+  <main>
+    <h1>Entrar</h1>
+
+    <% if (error) { %>
+      <p style="color: red;"><%= error %></p>
+    <% } %>
+
+    <form action="/login" method="POST">
+      <div>
+        <label for="username">Nome de utilizador</label>
+        <input type="text" id="username" name="username" value="<%= username %>" required>
+      </div>
+      <div>
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required>
+      </div>
+      <button type="submit">Entrar</button>
+    </form>
+
+    <p>Ainda não tens conta? <a href="/register">Registar</a></p>
+  </main>
+</body>
+</html>

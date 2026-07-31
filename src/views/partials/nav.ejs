@@ -1,0 +1,12 @@
+<nav>
+  <a href="/">Statum</a>
+  <% if (currentUser) { %>
+    <span>Ligado como <%= currentUser.username %></span>
+    <form action="/logout" method="POST" style="display:inline">
+      <button type="submit">Sair</button>
+    </form>
+  <% } else { %>
+    <a href="/login">Entrar</a>
+    <a href="/register">Registar</a>
+  <% } %>
+</nav>
