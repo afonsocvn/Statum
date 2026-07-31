@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <title>Statum - Países</title>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <%- include('partials/nav') %>
+
+  <main>
+    <h1>Países</h1>
+
+    <% byContinent.forEach(function(group) { %>
+      <section>
+        <h2><%= group.continent %></h2>
+        <ul>
+          <% group.countries.forEach(function(country) { %>
+            <li><%= country.flag %> <%= country.name %> — <%= country.population.toLocaleString('pt-PT') %> habitantes</li>
+          <% }) %>
+        </ul>
+      </section>
+    <% }) %>
+  </main>
+</body>
+</html>

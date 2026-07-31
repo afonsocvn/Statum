@@ -18,9 +18,16 @@ Este ficheiro regista decisões importantes tomadas ao longo do desenvolvimento,
 - Registo pede apenas username e password, sem campos adicionais por agora.
 - Passwords guardadas com hash `bcrypt`.
 
+## 2026-07-31 — Países
+
+- Europa: todos os países, exceto os 5 microestados com população abaixo de ~100 mil (Vaticano, Mónaco, San Marino, Liechtenstein, Andorra).
+- Ásia: top 10 países por população (China, Índia, Indonésia, Paquistão, Bangladesh, Japão, Filipinas, Vietname, Irão, Turquia).
+- Américas: top 10 países por população (EUA, Brasil, México, Colômbia, Argentina, Canadá, Peru, Venezuela, Chile, Equador).
+- Total: 61 países jogáveis. Lista completa em `src/db/countries-data.js`.
+- Ainda sem ligação a utilizadores (cidadania) nem a nenhuma mecânica de jogo — só a lista de referência por agora.
+
 ## Próximas decisões pendentes
 
-- Lista de países a incluir na fase inicial (todos, ou um/alguns continentes primeiro).
 - Estrutura do sistema de empresas/produção.
 - Regras do mercado.
 - Comportamento dos bots (económicos, militares, políticos).

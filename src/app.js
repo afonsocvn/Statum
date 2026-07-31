@@ -4,6 +4,7 @@ const session = require('express-session');
 const db = require('./db');
 const indexRouter = require('./routes/index');
 const authRouter = require('./routes/auth');
+const countriesRouter = require('./routes/countries');
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/', authRouter);
+app.use('/', countriesRouter);
 app.use('/', indexRouter);
 
 app.use((req, res) => {
