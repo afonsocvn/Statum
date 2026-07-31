@@ -1,21 +1,21 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="en">
 <head>
-  <title>Statum - Países</title>
+  <title>Statum - Countries</title>
   <%- include('partials/head') %>
 </head>
 <body>
   <%- include('partials/nav') %>
 
   <main>
-    <h1>Países</h1>
+    <h1>Countries</h1>
 
     <% byContinent.forEach(function(group) { %>
       <section>
         <h2><%= group.continent %></h2>
         <ul>
           <% group.countries.forEach(function(country) { %>
-            <li><%= country.flag %> <a href="/countries/<%= country.code %>"><%= country.name %></a> — <%= country.population.toLocaleString('pt-PT') %> habitantes</li>
+            <li><%= country.flag %> <a href="/countries/<%= country.code %>"><%= country.name %></a> — <%= country.population.toLocaleString('en-US') %> inhabitants</li>
           <% }) %>
         </ul>
       </section>

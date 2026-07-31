@@ -39,9 +39,21 @@ Este ficheiro regista decisões importantes tomadas ao longo do desenvolvimento,
 - Região inicial é sempre a Capital do país escolhido, atribuída automaticamente (sem escolha manual).
 - Cidadania fixa por agora — sem funcionalidade para mudar de país depois do registo.
 
+## 2026-07-31 — Idioma do jogo
+
+- O jogo (tudo o que o jogador vê: páginas, mensagens de erro, nomes de países/regiões/moedas) passa a ser todo em inglês a partir de agora.
+- Este ficheiro (`docs/decisions.md`) e o `README.md` mantêm-se em português — são documentação interna nossa, não fazem parte do jogo.
+- Os nomes de países e regiões guardados na base de dados foram traduzidos para inglês (ex: "Alemanha" → "Germany", "Região Norte" → "North Region").
+
+## 2026-07-31 — Moeda
+
+- Duas moedas: **Gold** (universal, ainda sem forma de obter) e uma **moeda nacional por país** (ex: "Portugal Solis", "Brazil Solis").
+- Moeda nacional com nomes fictícios, esquema sistemático `{Nome do país} Solis` — não usa nomes de moedas reais.
+- Saldo inicial no registo: 0 Gold, 100 na moeda nacional do país escolhido.
+- Sem forma de ganhar/gastar ainda (isso vem com Empresas e Mercado). Saldos visíveis na barra de navegação.
+
 ## Próximas decisões pendentes
 
-- Moeda simples do jogo.
 - Estrutura do sistema de empresas/produção (Q1-Q5, múltiplos recursos).
 - Regras do mercado.
 - Comportamento dos bots (económicos, militares, políticos).

@@ -27,11 +27,11 @@ seedCountries(countries);
 
 const REGION_NAMES = [
   'Capital',
-  'Região Norte',
-  'Região Sul',
-  'Região Este',
-  'Região Oeste',
-  'Região Central',
+  'North Region',
+  'South Region',
+  'East Region',
+  'West Region',
+  'Central Region',
 ];
 
 const insertRegion = db.prepare(

@@ -1,13 +1,16 @@
 <nav>
   <a href="/">Statum</a>
-  <a href="/countries">Países</a>
+  <a href="/countries">Countries</a>
   <% if (currentUser) { %>
-    <span>Ligado como <%= currentUser.username %> (<%= currentUser.countryName %>, <%= currentUser.regionName %>)</span>
+    <span>
+      Logged in as <%= currentUser.username %> (<%= currentUser.countryName %>, <%= currentUser.regionName %>)
+      — <%= currentUser.gold %> Gold, <%= currentUser.nationalCurrency %> <%= currentUser.nationalCurrencyName %>
+    </span>
     <form action="/logout" method="POST" style="display:inline">
-      <button type="submit">Sair</button>
+      <button type="submit">Log out</button>
     </form>
   <% } else { %>
-    <a href="/login">Entrar</a>
-    <a href="/register">Registar</a>
+    <a href="/login">Log in</a>
+    <a href="/register">Register</a>
   <% } %>
 </nav>

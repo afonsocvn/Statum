@@ -2,6 +2,7 @@ const path = require('node:path');
 const express = require('express');
 const session = require('express-session');
 const db = require('./db');
+const { nationalCurrencyName } = require('./lib/currency');
 const indexRouter = require('./routes/index');
 const authRouter = require('./routes/auth');
 const countriesRouter = require('./routes/countries');
@@ -22,16 +23,21 @@ app.use(session({
 }));
 
 app.use((req, res, next) => {
-  res.locals.currentUser = req.session.userId
+  const user = req.session.userId
     ? db
         .prepare(
-          `SELECT users.id, users.username, countries.name AS countryName, countries.code AS countryCode, regions.name AS regionName
+          `SELECT users.id, users.username, users.gold, users.national_currency AS nationalCurrency,
+                  countries.name AS countryName, countries.code AS countryCode, regions.name AS regionName
            FROM users
            JOIN countries ON countries.id = users.country_id
            JOIN regions ON regions.id = users.region_id
            WHERE users.id = ?`
         )
         .get(req.session.userId)
+    : null;
+
+  res.locals.currentUser = user
+    ? { ...user, nationalCurrencyName: nationalCurrencyName(user.countryName) }
     : null;
   next();
 });

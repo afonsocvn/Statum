@@ -1,9 +1,10 @@
 const express = require('express');
 const db = require('../db');
+const { nationalCurrencyName } = require('../lib/currency');
 
 const router = express.Router();
 
-const CONTINENT_ORDER = ['Europa', 'Ásia', 'Américas'];
+const CONTINENT_ORDER = ['Europe', 'Asia', 'Americas'];
 
 function flagEmoji(code) {
   return code
@@ -36,7 +37,10 @@ router.get('/countries/:code', (req, res, next) => {
     .prepare('SELECT name, is_capital FROM regions WHERE country_id = ? ORDER BY is_capital DESC, name')
     .all(country.id);
 
-  res.render('country', { country: { ...country, flag: flagEmoji(country.code) }, regions });
+  res.render('country', {
+    country: { ...country, flag: flagEmoji(country.code), currencyName: nationalCurrencyName(country.name) },
+    regions,
+  });
 });
 
 module.exports = router;

@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS schema_meta (
   value TEXT NOT NULL
 );
 
-INSERT OR IGNORE INTO schema_meta (key, value) VALUES ('schema_version', '4');
+INSERT OR IGNORE INTO schema_meta (key, value) VALUES ('schema_version', '5');
 
 CREATE TABLE IF NOT EXISTS countries (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -31,5 +31,7 @@ CREATE TABLE IF NOT EXISTS users (
   password_hash TEXT NOT NULL,
   country_id INTEGER NOT NULL REFERENCES countries(id),
   region_id INTEGER NOT NULL REFERENCES regions(id),
+  gold INTEGER NOT NULL DEFAULT 0,
+  national_currency INTEGER NOT NULL DEFAULT 0,
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );

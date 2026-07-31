@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="en">
 <head>
   <title>Statum - <%= country.name %></title>
   <%- include('partials/head') %>
@@ -9,16 +9,17 @@
 
   <main>
     <h1><%= country.flag %> <%= country.name %></h1>
-    <p><%= country.continent %> — <%= country.population.toLocaleString('pt-PT') %> habitantes</p>
+    <p><%= country.continent %> — <%= country.population.toLocaleString('en-US') %> inhabitants</p>
+    <p>National currency: <%= country.currencyName %></p>
 
-    <h2>Regiões</h2>
+    <h2>Regions</h2>
     <ul>
       <% regions.forEach(function(region) { %>
         <li><%= region.name %><%= region.is_capital ? ' (capital)' : '' %></li>
       <% }) %>
     </ul>
 
-    <p><a href="/countries">← Voltar à lista de países</a></p>
+    <p><a href="/countries">← Back to country list</a></p>
   </main>
 </body>
 </html>
