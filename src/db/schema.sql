@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS schema_meta (
   value TEXT NOT NULL
 );
 
-INSERT OR IGNORE INTO schema_meta (key, value) VALUES ('schema_version', '2');
+INSERT OR IGNORE INTO schema_meta (key, value) VALUES ('schema_version', '3');
 
 CREATE TABLE IF NOT EXISTS users (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -22,4 +22,12 @@ CREATE TABLE IF NOT EXISTS countries (
   code TEXT NOT NULL UNIQUE,
   continent TEXT NOT NULL,
   population INTEGER NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS regions (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  country_id INTEGER NOT NULL REFERENCES countries(id),
+  name TEXT NOT NULL,
+  is_capital INTEGER NOT NULL DEFAULT 0,
+  UNIQUE (country_id, name)
 );

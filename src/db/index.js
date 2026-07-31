@@ -25,4 +25,26 @@ const seedCountries = db.transaction((rows) => {
 });
 seedCountries(countries);
 
+const REGION_NAMES = [
+  'Capital',
+  'Região Norte',
+  'Região Sul',
+  'Região Este',
+  'Região Oeste',
+  'Região Central',
+];
+
+const insertRegion = db.prepare(
+  'INSERT OR IGNORE INTO regions (country_id, name, is_capital) VALUES (@country_id, @name, @is_capital)'
+);
+const seedRegions = db.transaction(() => {
+  const countryRows = db.prepare('SELECT id FROM countries').all();
+  for (const country of countryRows) {
+    REGION_NAMES.forEach((name, index) => {
+      insertRegion.run({ country_id: country.id, name, is_capital: index === 0 ? 1 : 0 });
+    });
+  }
+});
+seedRegions();
+
 module.exports = db;

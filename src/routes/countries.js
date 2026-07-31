@@ -25,4 +25,18 @@ router.get('/countries', (req, res) => {
   res.render('countries', { byContinent });
 });
 
+router.get('/countries/:code', (req, res, next) => {
+  const country = db
+    .prepare('SELECT id, name, code, continent, population FROM countries WHERE code = ?')
+    .get(req.params.code.toUpperCase());
+
+  if (!country) return next();
+
+  const regions = db
+    .prepare('SELECT name, is_capital FROM regions WHERE country_id = ? ORDER BY is_capital DESC, name')
+    .all(country.id);
+
+  res.render('country', { country: { ...country, flag: flagEmoji(country.code) }, regions });
+});
+
 module.exports = router;

@@ -26,9 +26,18 @@ Este ficheiro regista decisões importantes tomadas ao longo do desenvolvimento,
 - Total: 61 países jogáveis. Lista completa em `src/db/countries-data.js`.
 - Ainda sem ligação a utilizadores (cidadania) nem a nenhuma mecânica de jogo — só a lista de referência por agora.
 
+## 2026-07-31 — Regiões
+
+- Cada país tem 6 regiões: Capital + Região Norte/Sul/Este/Oeste/Central.
+- Nomes num esquema genérico, igual para todos os países (não são divisões administrativas reais), para evitar erros de geografia real e trabalho de pesquisa por país.
+- Por agora só têm nome e se são capital — sem recursos naturais nem outros dados de jogo associados.
+- Pré-requisito identificado para: cidadania (próximo passo), depois moeda, depois empresas/produção (nível "completo" estilo e-Sim, com Q1-Q5 e múltiplos recursos — a desenhar em detalhe nesse passo).
+
 ## Próximas decisões pendentes
 
-- Estrutura do sistema de empresas/produção.
+- Sistema de cidadania (ligar utilizador a país + região).
+- Moeda simples do jogo.
+- Estrutura do sistema de empresas/produção (Q1-Q5, múltiplos recursos).
 - Regras do mercado.
 - Comportamento dos bots (económicos, militares, políticos).
 - Sistema militar/guerra.

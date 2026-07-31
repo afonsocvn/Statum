@@ -15,7 +15,7 @@
         <h2><%= group.continent %></h2>
         <ul>
           <% group.countries.forEach(function(country) { %>
-            <li><%= country.flag %> <%= country.name %> — <%= country.population.toLocaleString('pt-PT') %> habitantes</li>
+            <li><%= country.flag %> <a href="/countries/<%= country.code %>"><%= country.name %></a> — <%= country.population.toLocaleString('pt-PT') %> habitantes</li>
           <% }) %>
         </ul>
       </section>
