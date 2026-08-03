@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Statum - <%= country.name %> Market</title>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <%- include('partials/nav') %>
+
+  <main>
+    <h1><%= country.name %> Market</h1>
+    <p>Traded in <%= currencyName %>. A 5% sales tax on goods goes to the government treasury (currently <%= country.treasury.toLocaleString('en-US') %> <%= currencyName %>).</p>
+
+    <% if (error) { %>
+      <p style="color: red;"><%= error %></p>
+    <% } %>
+
+    <% if (!isCitizen) { %>
+      <p><em>Only citizens of <%= country.name %> can buy or sell here. You can still browse listings below.</em></p>
+    <% } %>
+
+    <h2>Goods</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Good</th>
+          <th>Quality</th>
+          <th>Quantity</th>
+          <th>Price/unit</th>
+          <th>Seller</th>
+          <% if (isCitizen) { %><th>Buy</th><% } %>
+        </tr>
+      </thead>
+      <tbody>
+        <% goodListings.forEach(function(listing) { %>
+          <tr>
+            <td><%= listing.goodName %></td>
+            <td>Q<%= listing.quality_level %></td>
+            <td><%= listing.quantity %></td>
+            <td><%= listing.price_per_unit %> <%= currencyName %></td>
+            <td><%= listing.sellerUsername %><%= listing.sellerIsBot ? ' (bot)' : '' %></td>
+            <% if (isCitizen) { %>
+              <td>
+                <form action="/market/listings/<%= listing.id %>/buy" method="POST" style="display:inline">
+                  <input type="number" name="quantity" min="1" max="<%= listing.quantity %>" value="1" required style="width:4em">
+                  <button type="submit">Buy</button>
+                </form>
+              </td>
+            <% } %>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+
+    <h2>Gold Exchange</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Gold available</th>
+          <th>Price/Gold</th>
+          <th>Seller</th>
+          <% if (isCitizen) { %><th>Buy</th><% } %>
+        </tr>
+      </thead>
+      <tbody>
+        <% goldListings.forEach(function(listing) { %>
+          <tr>
+            <td><%= listing.quantity %></td>
+            <td><%= listing.price_per_unit %> <%= currencyName %></td>
+            <td><%= listing.sellerUsername %><%= listing.sellerIsBot ? ' (bot)' : '' %></td>
+            <% if (isCitizen) { %>
+              <td>
+                <form action="/market/listings/<%= listing.id %>/buy" method="POST" style="display:inline">
+                  <input type="number" name="quantity" min="1" max="<%= listing.quantity %>" value="1" required style="width:4em">
+                  <button type="submit">Buy</button>
+                </form>
+              </td>
+            <% } %>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+
+    <% if (isCitizen) { %>
+      <h2>Sell goods</h2>
+      <% if (ownCompanies.length === 0) { %>
+        <p>You have no company inventory in <%= country.name %> to sell.</p>
+      <% } else { %>
+        <form action="/market/<%= country.code %>/listings/good" method="POST">
+          <div>
+            <label for="company_id">From company</label>
+            <select id="company_id" name="company_id" required>
+              <% ownCompanies.forEach(function(company) { %>
+                <option value="<%= company.id %>"><%= company.goodName %> Q<%= company.quality_level %> (<%= company.inventory %> in stock)</option>
+              <% }) %>
+            </select>
+          </div>
+          <div>
+            <label for="good_quantity">Quantity</label>
+            <input type="number" id="good_quantity" name="quantity" min="1" required>
+          </div>
+          <div>
+            <label for="good_price">Price per unit (<%= currencyName %>)</label>
+            <input type="number" id="good_price" name="price" min="1" required>
+          </div>
+          <button type="submit">List for sale</button>
+        </form>
+      <% } %>
+
+      <h2>Sell Gold</h2>
+      <p>Your Gold balance: <%= ownGold %></p>
+      <form action="/market/<%= country.code %>/listings/gold" method="POST">
+        <div>
+          <label for="gold_quantity">Gold quantity</label>
+          <input type="number" id="gold_quantity" name="quantity" min="1" max="<%= ownGold %>" required>
+        </div>
+        <div>
+          <label for="gold_price">Price per Gold (<%= currencyName %>)</label>
+          <input type="number" id="gold_price" name="price" min="1" required>
+        </div>
+        <button type="submit">List Gold for sale</button>
+      </form>
+
+      <h2>Your inventory</h2>
+      <% if (ownInventory.length === 0) { %>
+        <p>You don't hold any goods.</p>
+      <% } else { %>
+        <ul>
+          <% ownInventory.forEach(function(item) { %>
+            <li><%= item.quantity %> <%= item.goodName %> (Q<%= item.quality_level %>)</li>
+          <% }) %>
+        </ul>
+      <% } %>
+    <% } %>
+  </main>
+</body>
+</html>

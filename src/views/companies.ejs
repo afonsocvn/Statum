@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Statum - Companies</title>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <%- include('partials/nav') %>
+
+  <main>
+    <h1>Companies</h1>
+    <p><a href="/companies/new">+ Start a new company</a></p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Good</th>
+          <th>Quality</th>
+          <th>Location</th>
+          <th>Owner</th>
+          <th>Salary</th>
+          <th>Job</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% companies.forEach(function(company) { %>
+          <tr>
+            <td><a href="/companies/<%= company.id %>"><%= company.goodName %></a> (<%= company.goodCategory %>)</td>
+            <td>Q<%= company.quality_level %></td>
+            <td><%= company.regionName %>, <%= company.countryName %></td>
+            <td><%= company.ownerUsername %><%= company.ownerIsBot ? ' (bot)' : '' %></td>
+            <td><%= company.salary %> <%= company.currencyName %></td>
+            <td><%= company.workerId ? 'Filled' : 'Open' %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </main>
+</body>
+</html>

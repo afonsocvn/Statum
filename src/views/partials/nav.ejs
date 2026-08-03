@@ -1,0 +1,24 @@
+<nav>
+  <a href="/">Statum</a>
+  <a href="/countries">Countries</a>
+  <a href="/companies">Companies</a>
+  <a href="/market">Market</a>
+  <a href="/battles">Battles</a>
+  <% if (currentUser) { %>
+    <a href="/training">Training</a>
+    <% if (currentUser.isAdmin) { %>
+      <a href="/admin/wars">Admin: Wars</a>
+    <% } %>
+    <span>
+      Logged in as <%= currentUser.username %> (<%= currentUser.countryName %>, <%= currentUser.regionName %>)
+      — <%= currentUser.gold %> Gold, <%= currentUser.nationalCurrency %> <%= currentUser.nationalCurrencyName %>,
+      <%= currentUser.hp %> HP
+    </span>
+    <form action="/logout" method="POST" style="display:inline">
+      <button type="submit">Log out</button>
+    </form>
+  <% } else { %>
+    <a href="/login">Log in</a>
+    <a href="/register">Register</a>
+  <% } %>
+</nav>

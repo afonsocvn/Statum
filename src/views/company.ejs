@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Statum - <%= company.goodName %> company</title>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <%- include('partials/nav') %>
+
+  <main>
+    <h1><%= company.goodName %> company (Q<%= company.quality_level %>)</h1>
+    <p>Owned by <%= company.ownerUsername %> in <%= company.regionName %>, <%= company.countryName %></p>
+    <p>Inventory: <%= company.inventory %> units of <%= company.goodName %></p>
+    <p>Salary: <%= company.salary %> <%= company.currencyName %> per work shift</p>
+    <p>Production: <%= unitsPerWork %> units per work shift</p>
+
+    <% if (error) { %>
+      <p style="color: red;"><%= error %></p>
+    <% } %>
+
+    <h2>Job</h2>
+    <% if (job) { %>
+      <p>Worked by <%= job.workerUsername %></p>
+    <% } else { %>
+      <p>This job is open.</p>
+      <% if (currentUser) { %>
+        <form action="/companies/<%= company.id %>/apply" method="POST">
+          <button type="submit">Apply for this job</button>
+        </form>
+      <% } %>
+    <% } %>
+
+    <% if (currentUser && job && job.worker_id === currentUser.id) { %>
+      <form action="/companies/<%= company.id %>/work" method="POST">
+        <button type="submit">Work</button>
+      </form>
+    <% } %>
+
+    <% if (currentUser && currentUser.id === company.owner_id) { %>
+      <h2>Owner controls</h2>
+      <% if (upgradeCost) { %>
+        <form action="/companies/<%= company.id %>/upgrade" method="POST">
+          <button type="submit">Upgrade to Q<%= company.quality_level + 1 %> (costs <%= upgradeCost %> <%= company.currencyName %>)</button>
+        </form>
+      <% } else { %>
+        <p>This company is already at the maximum quality level (Q<%= maxQuality %>).</p>
+      <% } %>
+    <% } %>
+
+    <p><a href="/companies">← Back to companies</a></p>
+  </main>
+</body>
+</html>

@@ -19,6 +19,7 @@ O servidor arranca em `http://localhost:3000`.
 
 ## Estado do projeto
 
-Ver [docs/decisions.md](docs/decisions.md) para o histórico de decisões tomadas ao longo do desenvolvimento.
+- [docs/game-design.md](docs/game-design.md): regras atuais do jogo, organizadas por sistema.
+- [docs/decisions.md](docs/decisions.md): histórico cronológico de decisões tomadas ao longo do desenvolvimento.
 
 Este projeto é desenvolvido de forma incremental: um sistema de cada vez, com confirmação do dono do projeto antes de avançar para o próximo.

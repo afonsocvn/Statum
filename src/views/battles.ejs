@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Statum - Battles</title>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <%- include('partials/nav') %>
+
+  <main>
+    <h1>Battles</h1>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Attacker</th>
+          <th>Defender</th>
+          <th>Region</th>
+          <th>Status</th>
+          <th>Round</th>
+          <th>Score</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% battles.forEach(function(battle) { %>
+          <tr>
+            <td><%= battle.attackerName %></td>
+            <td><%= battle.defenderName %></td>
+            <td><%= battle.regionName %></td>
+            <td><%= battle.status %><%= battle.status === 'active' ? ' (' + battle.phase + ')' : '' %></td>
+            <td><%= battle.round_number %></td>
+            <td>
+              <% if (battle.status === 'active' && battle.phase === 'overtime') { %>
+                <%= battle.overtime_attacker_wins %> - <%= battle.overtime_defender_wins %>
+              <% } else { %>
+                <%= battle.attacker_rounds_won %> - <%= battle.defender_rounds_won %>
+              <% } %>
+            </td>
+            <td><a href="/battles/<%= battle.id %>">View</a></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </main>
+</body>
+</html>

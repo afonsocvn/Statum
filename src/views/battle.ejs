@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Statum - Battle: <%= battle.attackerName %> vs <%= battle.defenderName %></title>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <%- include('partials/nav') %>
+
+  <main>
+    <h1><%= battle.attackerName %> vs <%= battle.defenderName %></h1>
+    <p>Region: <%= battle.regionName %> (terrain: <%= battle.terrain %>)</p>
+    <p>Status: <%= battle.status %> — Phase: <%= battle.phase %> — Round <%= battle.round_number %></p>
+
+    <% if (battle.phase === 'overtime') { %>
+      <p>Overtime score: <%= battle.overtime_attacker_wins %> - <%= battle.overtime_defender_wins %></p>
+    <% } else { %>
+      <p>Rounds won: <%= battle.attacker_rounds_won %> - <%= battle.defender_rounds_won %></p>
+    <% } %>
+    <p>Current round damage: <%= battle.attacker_round_damage %> (attacker) vs <%= battle.defender_round_damage %> (defender)</p>
+
+    <% if (battle.status === 'finished') { %>
+      <p><strong>Battle finished. Winner: <%= battle.winner_country_id === battle.attacker_country_id ? battle.attackerName : battle.defenderName %></strong></p>
+    <% } %>
+
+    <% if (message) { %>
+      <p style="color: green;"><%= message %></p>
+    <% } %>
+    <% if (error) { %>
+      <p style="color: red;"><%= error %></p>
+    <% } %>
+
+    <% if (!currentUser) { %>
+      <p><em><a href="/login">Log in</a> to fight in this battle.</em></p>
+    <% } else if (!side) { %>
+      <p><em>Your country isn't part of this battle.</em></p>
+    <% } else if (battle.status === 'finished') { %>
+      <p><em>This battle is over.</em></p>
+    <% } else { %>
+      <h2>Fight (as <%= side %>)</h2>
+      <p>Your HP: <%= currentUser.hp %> / 100 — Rank: <%= rank.name %> (+<%= Math.round(rank.bonus * 100) %>% damage)</p>
+      <p>Weapons in inventory: <%= weaponStock %> — Food in inventory: <%= foodStock %></p>
+
+      <form action="/battles/<%= battle.id %>/hit" method="POST">
+        <div>
+          <label for="hits">Hits</label>
+          <select id="hits" name="hits">
+            <% hitBatchSizes.forEach(function(n) { %>
+              <option value="<%= n %>"><%= n %> hit<%= n > 1 ? 's' : '' %> (<%= n * 10 %> HP)</option>
+            <% }) %>
+          </select>
+        </div>
+        <div>
+          <label><input type="checkbox" name="use_weapon" value="yes"> Use Weapons</label>
+        </div>
+        <button type="submit">Attack</button>
+      </form>
+
+      <form action="/battles/<%= battle.id %>/eat-food" method="POST">
+        <button type="submit">Eat Food (+20 HP)</button>
+      </form>
+    <% } %>
+
+    <p><a href="/battles">← Back to battles</a></p>
+  </main>
+</body>
+</html>

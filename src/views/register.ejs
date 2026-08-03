@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Statum - Register</title>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <%- include('partials/nav') %>
+
+  <main>
+    <h1>Create account</h1>
+
+    <% if (error) { %>
+      <p style="color: red;"><%= error %></p>
+    <% } %>
+
+    <form action="/register" method="POST">
+      <div>
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" value="<%= username %>" required>
+      </div>
+      <div>
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required minlength="8">
+      </div>
+      <div>
+        <label for="country_id">Country of citizenship</label>
+        <select id="country_id" name="country_id" required>
+          <option value="" disabled <%= countryId === '' ? 'selected' : '' %>>Choose a country</option>
+          <% byContinent.forEach(function(group) { %>
+            <optgroup label="<%= group.continent %>">
+              <% group.countries.forEach(function(country) { %>
+                <option value="<%= country.id %>" <%= String(countryId) === String(country.id) ? 'selected' : '' %>><%= country.name %></option>
+              <% }) %>
+            </optgroup>
+          <% }) %>
+        </select>
+        <p>You will start in the capital. Citizenship cannot be changed for now.</p>
+      </div>
+      <button type="submit">Register</button>
+    </form>
+
+    <p>Already have an account? <a href="/login">Log in</a></p>
+  </main>
+</body>
+</html>

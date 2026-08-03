@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Statum - Training</title>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <%- include('partials/nav') %>
+
+  <main>
+    <h1>Training</h1>
+
+    <% if (error) { %>
+      <p style="color: red;"><%= error %></p>
+    <% } %>
+
+    <h2>Your skills</h2>
+    <ul>
+      <li>Naval: <%= skills.naval %></li>
+      <li>Mountainous: <%= skills.mountainous %></li>
+      <li>Terrestrial: <%= skills.terrestrial %></li>
+      <li>Desert: <%= skills.desert %></li>
+    </ul>
+    <p>Unspent points: <%= skills.unspent_points %></p>
+
+    <form action="/training/train" method="POST">
+      <button type="submit">Train (once per day, +<%= 5 %> points)</button>
+    </form>
+
+    <% if (skills.unspent_points > 0) { %>
+      <h2>Allocate points</h2>
+      <form action="/training/allocate" method="POST">
+        <div>
+          <label for="naval">Naval</label>
+          <input type="number" id="naval" name="naval" min="0" value="0">
+        </div>
+        <div>
+          <label for="mountainous">Mountainous</label>
+          <input type="number" id="mountainous" name="mountainous" min="0" value="0">
+        </div>
+        <div>
+          <label for="terrestrial">Terrestrial</label>
+          <input type="number" id="terrestrial" name="terrestrial" min="0" value="0">
+        </div>
+        <div>
+          <label for="desert">Desert</label>
+          <input type="number" id="desert" name="desert" min="0" value="0">
+        </div>
+        <button type="submit">Allocate</button>
+      </form>
+    <% } %>
+  </main>
+</body>
+</html>

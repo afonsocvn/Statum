@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Statum - <%= country.name %></title>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <%- include('partials/nav') %>
+
+  <main>
+    <h1><%= country.flag %> <%= country.name %></h1>
+    <p><%= country.continent %> — <%= country.population.toLocaleString('en-US') %> inhabitants</p>
+    <p>National currency: <%= country.currencyName %></p>
+    <p>Government treasury: <%= country.treasury.toLocaleString('en-US') %> <%= country.currencyName %></p>
+
+    <h2>Regions</h2>
+    <ul>
+      <% regions.forEach(function(region) { %>
+        <li><%= region.name %><%= region.is_capital ? ' (capital)' : '' %></li>
+      <% }) %>
+    </ul>
+
+    <p><a href="/countries">← Back to country list</a></p>
+  </main>
+</body>
+</html>

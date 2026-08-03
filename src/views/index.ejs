@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Statum</title>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <%- include('partials/nav') %>
+
+  <header>
+    <h1>Statum</h1>
+    <p>Multiplayer geopolitical and economic simulation — in development.</p>
+  </header>
+
+  <main>
+    <section>
+      <h2>Project status</h2>
+      <ul>
+        <li>Base project structure: done</li>
+        <li>Initial database schema: done (version <%= schemaVersion %>)</li>
+        <li>Authentication system: done</li>
+        <li>Countries: done (<a href="/countries">view list</a>)</li>
+        <li>Citizenship: done</li>
+        <li>Currency (Gold + national currency): done</li>
+        <li>Companies/production: done (<a href="/companies">view list</a>)</li>
+        <li>Market: done (<a href="/market">view markets</a>)</li>
+        <li>Bots: economic bots done; military/political bots pending their systems</li>
+        <li>Military/war system: done — training/skills (<a href="/training">train</a>), wars/battles/conquest (<a href="/battles">view battles</a>). War declaration is temporarily admin-only until a political system exists.</li>
+        <li>Political/elections system: not started</li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>
