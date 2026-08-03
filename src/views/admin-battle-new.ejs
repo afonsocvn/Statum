@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Statum - Admin: Open Battle</title>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <%- include('partials/nav') %>
+
+  <main>
+    <h1>Open a battle: <%= war.attackerName %> vs <%= war.defenderName %></h1>
+
+    <% if (error) { %>
+      <p style="color: red;"><%= error %></p>
+    <% } %>
+
+    <form action="/admin/wars/<%= war.id %>/battles" method="POST">
+      <div>
+        <label for="region_id">Region of <%= war.defenderName %> to attack</label>
+        <select id="region_id" name="region_id" required>
+          <% regions.forEach(function(region) { %>
+            <option value="<%= region.id %>"><%= region.name %> (<%= region.terrain %>)</option>
+          <% }) %>
+        </select>
+      </div>
+      <button type="submit">Open battle</button>
+    </form>
+
+    <p><a href="/admin/wars">← Back to wars</a></p>
+  </main>
+</body>
+</html>

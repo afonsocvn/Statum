@@ -112,25 +112,36 @@ Bots económicos (implementados):
 - Bots aparecem nas listagens de Empresas e Mercado como qualquer jogador, com a etiqueta "(bot)" a seguir ao nome.
 - Não conseguem fazer login (password_hash não é uma password válida).
 
-## 2026-07-31 — Sistema militar (em progresso)
+## 2026-07-31 — Sistema militar: treino e perícias
 
-Decidido contigo, ainda a implementar:
-- Guerras conquistam território de verdade: uma região passa a pertencer ao país vencedor. Cidadania dos jogadores nunca muda; as empresas nessa região é que mudam de país (e passam a pagar impostos/salários na moeda do novo país).
-- Perícias por tipo de terreno (não uma "força" única): Naval, Mountainous, Terrestrial, Desert. Cada região tem 1 ou mais tipos de terreno, que dão bónus % à perícia correspondente numa batalha aí.
-- Guerra só pode ser declarada pelo Presidente com aprovação do Congresso, custa 50 Gold; abrir batalhas sem guerra declarada custa 100 Gold. **Isto depende do sistema político (cargos, congresso) que ainda não existe.** Decisão: por agora usamos uma regra temporária (a definir) até o sistema político existir, e substituímos depois pelo Presidente/Congresso reais.
-- Batalhas em rondas: jogadores têm vida, armas equipadas, e dão "hits" com hipótese de falha (miss) e de crítico. Quem causa mais dano numa ronda ganha essa ronda; quem ganha mais rondas ganha a batalha. Modelo inspirado no e-Sim.
-- Atribuição de terreno às 366 regiões: pedi-te uma folha Excel (`regions-terrain-template.xlsx`) para preencheres com base em geografia real (ou correndo noutro modelo de IA), em vez de um esquema genérico — ainda a aguardar esse ficheiro preenchido.
-
-Já implementado (não depende do terreno):
 - **Treino e perícias**: tabela `user_skills` (naval, mountainous, terrestrial, desert, unspent_points, last_trained_at).
 - Ação "Treinar" (`/training/train`) 1x/dia (cooldown 24h, igual ao trabalho), dá 5 pontos não distribuídos por treino.
 - Alocação livre dos pontos pelas 4 perícias (`/training/allocate`), validada para não exceder os pontos disponíveis.
-- Adicionada coluna `regions.terrain` (default `'terrestrial'`, formato `tipo1;tipo2` se a região tiver mais do que um), pronta a receber os dados reais do Excel.
 
-Ainda por implementar assim que o terreno chegar: guerras, batalhas, conquista de regiões, e a regra temporária de declaração de guerra.
+## 2026-07-31 — Terreno das regiões
+
+- Pedi-te uma folha Excel com as 366 regiões para preencheres o terreno (naval, mountainous, terrestrial, desert; uma região pode ter vários, separados por `;`) com base em geografia real.
+- **Encontrei um problema nos dados devolvidos**: 38 países ficaram sem nenhuma região naval, incluindo arquipélagos e países com costa enorme (Japão, Indonésia, Filipinas, China, Índia, EUA, Brasil, Canadá, Chile, Malta, Chipre, Rússia, Ucrânia, Estónia, Letónia, Lituânia, entre outros) — a ferramenta usada só tratou bem alguns casos europeus óbvios.
+- Corrigi eu próprio 26 desses países (adicionei `naval` às regiões plausíveis, com base em conhecimento geográfico geral, sem inventar geografia). Ficam só sem naval os 12 países genuinamente sem litoral (Áustria, Bielorrússia, Bósnia, Chéquia, Hungria, Kosovo, Luxemburgo, Moldávia, Macedónia do Norte, Sérvia, Eslováquia, Suíça) — correto.
+- Dados finais em `src/db/region-terrain-data.js`, importados para `regions.terrain` no arranque da base de dados.
+
+## 2026-07-31 — Guerras e batalhas
+
+Decidido contigo:
+- Guerras conquistam território de verdade: a região passa a pertencer ao país vencedor. Cidadania dos jogadores nunca muda; as empresas nessa região mudam de país (passam a usar a moeda/impostos do novo país automaticamente, porque são calculados a partir do país atual da empresa).
+- Guerra só pode ser declarada pelo Admin por agora (regra temporária até existir Presidente/Congresso — sem custo em Gold aplicado nesta fase temporária, já que não há um "presidente" a pagar).
+- Vida: 100 HP máximo, cada hit custa 10 HP (10 hits possíveis com vida cheia). Comer Food restaura 20 HP (até ao máximo).
+- Armas: bónus de dano por qualidade — +25% por nível de Q (Q1=+25%, Q2=+50%, Q3=+75%, ..., Q6=+150%), consistente com a escala Q1-Q6 já usada nas empresas. Passei a guardar a qualidade dos bens no inventário/anúncios do mercado (antes só a quantidade era guardada).
+- Opções de ataque: 1, 5 ou 10 hits de cada vez (consumindo a vida correspondente).
+- Perícias por terreno: dano = 10 (base) + perícia relevante × (1 + bónus do terreno). Bónus assumidos por mim: naval/mountainous/desert = +30%, terrestrial = +10% (terreno "genérico", por isso bónus menor). Se a região tiver vários tipos de terreno, usa-se o que der mais dano.
+- Miss/crítico: 10% de hipótese de falhar (0 dano), 15% de hipótese de crítico (x2 dano) — números assumidos por mim.
+- Rank militar: cresce com o dano total acumulado ao longo do tempo (`users.total_damage`), dá um pequeno bónus % ao dano (Recruit 0% → Major +12%, tabela em `src/lib/military.js`) — thresholds assumidos por mim.
+- Rondas: 8 rondas de 2h cada; quem ganhar 5 rondas primeiro ganha a batalha. Ganha a ronda quem causar mais dano nela. Se chegar a 4-4 ao fim das 8 rondas, entra-se em prolongamento: 3 rondas de 1h, ganha quem vencer 2 dessas 3.
+- Avanço de rondas e resolução de batalhas corre numa tarefa periódica no servidor (a cada minuto, verifica se alguma ronda já demorou o tempo suficiente).
+- **Bug encontrado e corrigido durante os testes**: a rotina que garante que cada país tem as suas 6 regiões corria em todos os arranques do servidor, o que "repunha" uma região conquistada ao dono original (porque deixava de encontrar uma região com o nome/país originais). Corrigido para só semear as regiões uma única vez (controlado por uma flag em `schema_meta`). Testado com reinício do servidor a confirmar que a conquista persiste.
+- Testado: guerra, abertura de batalha, ataque (com e sem arma), gasto/recuperação de vida, validações de erro, avanço de rondas, vitória, conquista de região (incluindo mudança de país de uma empresa lá localizada).
 
 ## Próximas decisões pendentes
 
-- Regra temporária de quem pode declarar guerra (até existir Presidente/Congresso).
-- Números concretos da batalha (dano base, % de miss, % de crítico, número de rondas, duração de cada ronda).
+- Substituir a regra temporária de guerra (Admin) por Presidente + Congresso, e aplicar os custos em Gold (50 para declarar guerra, 100 para abrir batalha sem guerra declarada) a essa altura.
 - Sistema político/eleições.

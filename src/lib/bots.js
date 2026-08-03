@@ -78,9 +78,9 @@ function runBotTick(db) {
       const price = BASE_PRICES[company.good_key];
       const listAndClear = db.transaction(() => {
         db.prepare(
-          `INSERT INTO market_listings (seller_id, country_id, item_type, good_key, source_company_id, quantity, price_per_unit)
-           VALUES (?, ?, 'good', ?, ?, ?, ?)`
-        ).run(bot.id, bot.country_id, company.good_key, company.id, updatedCompany.inventory, price);
+          `INSERT INTO market_listings (seller_id, country_id, item_type, good_key, quality_level, source_company_id, quantity, price_per_unit)
+           VALUES (?, ?, 'good', ?, ?, ?, ?, ?)`
+        ).run(bot.id, bot.country_id, company.good_key, company.quality_level, company.id, updatedCompany.inventory, price);
         db.prepare('UPDATE companies SET inventory = 0 WHERE id = ?').run(company.id);
       });
       listAndClear();

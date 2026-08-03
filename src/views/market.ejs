@@ -24,6 +24,7 @@
       <thead>
         <tr>
           <th>Good</th>
+          <th>Quality</th>
           <th>Quantity</th>
           <th>Price/unit</th>
           <th>Seller</th>
@@ -34,6 +35,7 @@
         <% goodListings.forEach(function(listing) { %>
           <tr>
             <td><%= listing.goodName %></td>
+            <td>Q<%= listing.quality_level %></td>
             <td><%= listing.quantity %></td>
             <td><%= listing.price_per_unit %> <%= currencyName %></td>
             <td><%= listing.sellerUsername %><%= listing.sellerIsBot ? ' (bot)' : '' %></td>
@@ -89,7 +91,7 @@
             <label for="company_id">From company</label>
             <select id="company_id" name="company_id" required>
               <% ownCompanies.forEach(function(company) { %>
-                <option value="<%= company.id %>"><%= company.goodName %> (<%= company.inventory %> in stock)</option>
+                <option value="<%= company.id %>"><%= company.goodName %> Q<%= company.quality_level %> (<%= company.inventory %> in stock)</option>
               <% }) %>
             </select>
           </div>
@@ -125,7 +127,7 @@
       <% } else { %>
         <ul>
           <% ownInventory.forEach(function(item) { %>
-            <li><%= item.quantity %> <%= item.goodName %></li>
+            <li><%= item.quantity %> <%= item.goodName %> (Q<%= item.quality_level %>)</li>
           <% }) %>
         </ul>
       <% } %>

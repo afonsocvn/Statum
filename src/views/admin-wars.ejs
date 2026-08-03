@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Statum - Admin: Wars</title>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <%- include('partials/nav') %>
+
+  <main>
+    <h1>Admin: Wars</h1>
+    <p><em>Temporary rule: only the admin can declare wars, until a political system (President/Congress) exists.</em></p>
+
+    <% if (error) { %>
+      <p style="color: red;"><%= error %></p>
+    <% } %>
+
+    <form action="/admin/wars" method="POST">
+      <div>
+        <label for="attacker_country_id">Attacker</label>
+        <select id="attacker_country_id" name="attacker_country_id" required>
+          <% countries.forEach(function(c) { %>
+            <option value="<%= c.id %>"><%= c.name %></option>
+          <% }) %>
+        </select>
+      </div>
+      <div>
+        <label for="defender_country_id">Defender</label>
+        <select id="defender_country_id" name="defender_country_id" required>
+          <% countries.forEach(function(c) { %>
+            <option value="<%= c.id %>"><%= c.name %></option>
+          <% }) %>
+        </select>
+      </div>
+      <button type="submit">Declare war</button>
+    </form>
+
+    <h2>Wars</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Attacker</th>
+          <th>Defender</th>
+          <th>Status</th>
+          <th>Declared</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% wars.forEach(function(war) { %>
+          <tr>
+            <td><%= war.attackerName %></td>
+            <td><%= war.defenderName %></td>
+            <td><%= war.status %></td>
+            <td><%= war.declared_at %></td>
+            <td><a href="/admin/wars/<%= war.id %>/battles/new">Open battle</a></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </main>
+</body>
+</html>

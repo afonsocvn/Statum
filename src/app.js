@@ -9,6 +9,8 @@ const countriesRouter = require('./routes/countries');
 const companiesRouter = require('./routes/companies');
 const marketRouter = require('./routes/market');
 const trainingRouter = require('./routes/training');
+const adminRouter = require('./routes/admin');
+const battlesRouter = require('./routes/battles');
 
 const app = express();
 
@@ -30,7 +32,9 @@ app.use((req, res, next) => {
     ? db
         .prepare(
           `SELECT users.id, users.username, users.gold, users.national_currency AS nationalCurrency,
-                  countries.name AS countryName, countries.code AS countryCode, regions.name AS regionName
+                  users.is_admin AS isAdmin, users.hp, users.total_damage AS totalDamage,
+                  countries.id AS countryId, countries.name AS countryName, countries.code AS countryCode,
+                  regions.name AS regionName
            FROM users
            JOIN countries ON countries.id = users.country_id
            JOIN regions ON regions.id = users.region_id
@@ -50,6 +54,8 @@ app.use('/', countriesRouter);
 app.use('/', companiesRouter);
 app.use('/', marketRouter);
 app.use('/', trainingRouter);
+app.use('/', adminRouter);
+app.use('/', battlesRouter);
 app.use('/', indexRouter);
 
 app.use((req, res) => {

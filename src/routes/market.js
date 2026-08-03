@@ -70,12 +70,12 @@ router.get('/market/:code', (req, res, next) => {
 
   if (isCitizen) {
     ownCompanies = db
-      .prepare('SELECT id, good_key, inventory FROM companies WHERE owner_id = ? AND country_id = ? AND inventory > 0')
+      .prepare('SELECT id, good_key, quality_level, inventory FROM companies WHERE owner_id = ? AND country_id = ? AND inventory > 0')
       .all(req.session.userId, country.id)
       .map((company) => ({ ...company, goodName: goodByKey(company.good_key).name }));
 
     ownInventory = db
-      .prepare('SELECT good_key, quantity FROM user_inventory WHERE user_id = ? AND quantity > 0')
+      .prepare('SELECT good_key, quality_level, quantity FROM user_inventory WHERE user_id = ? AND quantity > 0')
       .all(req.session.userId)
       .map((row) => ({ ...row, goodName: goodByKey(row.good_key).name }));
 
@@ -117,9 +117,9 @@ router.post('/market/:code/listings/good', requireLogin, (req, res, next) => {
   const createListing = db.transaction(() => {
     db.prepare('UPDATE companies SET inventory = inventory - ? WHERE id = ?').run(quantity, company.id);
     db.prepare(
-      `INSERT INTO market_listings (seller_id, country_id, item_type, good_key, source_company_id, quantity, price_per_unit)
-       VALUES (?, ?, 'good', ?, ?, ?, ?)`
-    ).run(req.session.userId, country.id, company.good_key, company.id, quantity, price);
+      `INSERT INTO market_listings (seller_id, country_id, item_type, good_key, quality_level, source_company_id, quantity, price_per_unit)
+       VALUES (?, ?, 'good', ?, ?, ?, ?, ?)`
+    ).run(req.session.userId, country.id, company.good_key, company.quality_level, company.id, quantity, price);
   });
   createListing();
 
@@ -188,9 +188,9 @@ router.post('/market/listings/:id/buy', requireLogin, (req, res, next) => {
       db.prepare('UPDATE users SET gold = gold + ? WHERE id = ?').run(quantity, buyer.id);
     } else {
       db.prepare(
-        `INSERT INTO user_inventory (user_id, good_key, quantity) VALUES (?, ?, ?)
-         ON CONFLICT(user_id, good_key) DO UPDATE SET quantity = quantity + excluded.quantity`
-      ).run(buyer.id, listing.good_key, quantity);
+        `INSERT INTO user_inventory (user_id, good_key, quality_level, quantity) VALUES (?, ?, ?, ?)
+         ON CONFLICT(user_id, good_key, quality_level) DO UPDATE SET quantity = quantity + excluded.quantity`
+      ).run(buyer.id, listing.good_key, listing.quality_level, quantity);
     }
 
     const remaining = listing.quantity - quantity;
