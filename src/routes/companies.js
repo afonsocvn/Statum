@@ -6,7 +6,8 @@ const { nationalCurrencyName } = require('../lib/currency');
 const router = express.Router();
 
 const MAX_QUALITY = 6;
-const CREATION_COST = 50;
+const CREATION_COST_GOLD = 50;
+const CREATION_COST_NATIONAL = 50;
 const WORK_COOLDOWN_MS = 24 * 60 * 60 * 1000;
 
 function goodByKey(key) {
@@ -67,7 +68,13 @@ router.get('/companies/new', requireLogin, (req, res) => {
     .prepare('SELECT id, name FROM regions WHERE country_id = ? ORDER BY is_capital DESC, name')
     .all(owner.country_id);
 
-  res.render('company-new', { error: null, goods, regions, creationCost: CREATION_COST });
+  res.render('company-new', {
+    error: null,
+    goods,
+    regions,
+    creationCostGold: CREATION_COST_GOLD,
+    creationCostNational: CREATION_COST_NATIONAL,
+  });
 });
 
 router.post('/companies', requireLogin, (req, res) => {
@@ -79,27 +86,30 @@ router.post('/companies', requireLogin, (req, res) => {
   const good = goodByKey(req.body.good_key);
   const region = regions.find((r) => String(r.id) === String(req.body.region_id));
   const salary = parseInt(req.body.salary, 10);
+  const renderArgs = { goods, regions, creationCostGold: CREATION_COST_GOLD, creationCostNational: CREATION_COST_NATIONAL };
 
   if (!good) {
-    return res.render('company-new', { error: 'Please choose a valid good.', goods, regions, creationCost: CREATION_COST });
+    return res.render('company-new', { error: 'Please choose a valid good.', ...renderArgs });
   }
   if (!region) {
-    return res.render('company-new', { error: 'Please choose a valid region.', goods, regions, creationCost: CREATION_COST });
+    return res.render('company-new', { error: 'Please choose a valid region.', ...renderArgs });
   }
   if (!Number.isInteger(salary) || salary < 0) {
-    return res.render('company-new', { error: 'Salary must be a non-negative whole number.', goods, regions, creationCost: CREATION_COST });
+    return res.render('company-new', { error: 'Salary must be a non-negative whole number.', ...renderArgs });
   }
-  if (owner.national_currency < CREATION_COST) {
+  if (owner.gold < CREATION_COST_GOLD || owner.national_currency < CREATION_COST_NATIONAL) {
     return res.render('company-new', {
-      error: `You need at least ${CREATION_COST} of your national currency to start a company.`,
-      goods,
-      regions,
-      creationCost: CREATION_COST,
+      error: `You need at least ${CREATION_COST_GOLD} Gold and ${CREATION_COST_NATIONAL} of your national currency to start a company.`,
+      ...renderArgs,
     });
   }
 
   const createCompany = db.transaction(() => {
-    db.prepare('UPDATE users SET national_currency = national_currency - ? WHERE id = ?').run(CREATION_COST, owner.id);
+    db.prepare('UPDATE users SET gold = gold - ?, national_currency = national_currency - ? WHERE id = ?').run(
+      CREATION_COST_GOLD,
+      CREATION_COST_NATIONAL,
+      owner.id
+    );
     return db
       .prepare(
         'INSERT INTO companies (owner_id, good_key, quality_level, salary, country_id, region_id) VALUES (?, ?, 1, ?, ?, ?)'

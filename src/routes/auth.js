@@ -8,6 +8,7 @@ const USERNAME_RE = /^[a-zA-Z0-9_]{3,20}$/;
 const SALT_ROUNDS = 10;
 const CONTINENT_ORDER = ['Europe', 'Asia', 'Americas'];
 const STARTING_NATIONAL_CURRENCY = 100;
+const STARTING_GOLD = 5;
 
 function countriesByContinent() {
   const rows = db.prepare('SELECT id, name, continent FROM countries ORDER BY continent, name').all();
@@ -67,9 +68,9 @@ router.post('/register', (req, res) => {
   const passwordHash = bcrypt.hashSync(password, SALT_ROUNDS);
   const result = db
     .prepare(
-      'INSERT INTO users (username, password_hash, country_id, region_id, gold, national_currency) VALUES (?, ?, ?, ?, 0, ?)'
+      'INSERT INTO users (username, password_hash, country_id, region_id, gold, national_currency) VALUES (?, ?, ?, ?, ?, ?)'
     )
-    .run(username, passwordHash, country.id, capital.id, STARTING_NATIONAL_CURRENCY);
+    .run(username, passwordHash, country.id, capital.id, STARTING_GOLD, STARTING_NATIONAL_CURRENCY);
 
   req.session.userId = result.lastInsertRowid;
   res.redirect('/');

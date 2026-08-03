@@ -9,7 +9,7 @@
 
   <main>
     <h1>Start a new company</h1>
-    <p>Cost to start: <%= creationCost %> of your national currency.</p>
+    <p>Cost to start: <%= creationCostGold %> Gold + <%= creationCostNational %> of your national currency.</p>
 
     <% if (error) { %>
       <p style="color: red;"><%= error %></p>

@@ -49,8 +49,10 @@ Este ficheiro regista decisões importantes tomadas ao longo do desenvolvimento,
 
 - Duas moedas: **Gold** (universal, ainda sem forma de obter) e uma **moeda nacional por país** (ex: "Portugal Solis", "Brazil Solis").
 - Moeda nacional com nomes fictícios, esquema sistemático `{Nome do país} Solis` — não usa nomes de moedas reais.
-- Saldo inicial no registo: 0 Gold, 100 na moeda nacional do país escolhido.
-- Sem forma de ganhar/gastar ainda (isso vem com Empresas e Mercado). Saldos visíveis na barra de navegação.
+- Saldo inicial no registo: 5 Gold, 100 na moeda nacional do país escolhido.
+- Sem forma de ganhar Gold ainda — os 5 iniciais não chegam para criar uma empresa (custa 50 Gold), fica assim até existir uma forma de ganhar Gold (ex: Mercado ou outro sistema futuro).
+- Ideia registada para o futuro: a moeda nacional de cada país poderá vir a ser ajustável pelo governo desse país (sistema político, ainda por desenhar).
+- Saldos visíveis na barra de navegação.
 
 ## 2026-07-31 — Empresas/Produção
 
@@ -64,7 +66,7 @@ Assumidas por mim (números concretos de balanceamento, a ajustar quando quisere
 - Cada matéria-prima tem um produto de fábrica correspondente (1:1): Grain→Food, Iron→Weapons, Oil→Fuel, Timber→Furniture. Lista em `src/db/goods-data.js`.
 - Fábricas ainda **não consomem** a matéria-prima como input — produzem diretamente do trabalho, sem depender de comprar a matéria-prima a outra empresa. Essa dependência real só faz sentido quando existir Mercado (para comprar/vender entre empresas); por agora é só uma distinção cosmética (raw vs factory).
 - Produção por turno = nível de qualidade × 10 unidades (Q1 = 10, Q6 = 60).
-- Custo para criar uma empresa: 50 na moeda nacional do dono.
+- Custo para criar uma empresa: 50 Gold + 50 na moeda nacional do dono (atualizado depois de decisão explícita — inicialmente tinha implementado só moeda nacional).
 - Custo de upgrade de qualidade: nível atual × 100 na moeda nacional do dono (Q1→Q2 = 100, Q2→Q3 = 200, etc.).
 - Cada empresa tem exatamente 1 vaga de trabalho (não várias) — simplificação para esta primeira versão; pode expandir-se depois.
 - Empresa só pode ser criada num país igual à cidadania do dono (mas em qualquer uma das 6 regiões desse país).
