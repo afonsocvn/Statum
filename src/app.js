@@ -7,6 +7,7 @@ const indexRouter = require('./routes/index');
 const authRouter = require('./routes/auth');
 const countriesRouter = require('./routes/countries');
 const companiesRouter = require('./routes/companies');
+const marketRouter = require('./routes/market');
 
 const app = express();
 
@@ -46,6 +47,7 @@ app.use((req, res, next) => {
 app.use('/', authRouter);
 app.use('/', countriesRouter);
 app.use('/', companiesRouter);
+app.use('/', marketRouter);
 app.use('/', indexRouter);
 
 app.use((req, res) => {

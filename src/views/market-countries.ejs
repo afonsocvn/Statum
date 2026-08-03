@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Statum - Market</title>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <%- include('partials/nav') %>
+
+  <main>
+    <h1>Market</h1>
+    <p>Each country has its own market, traded in its national currency.</p>
+    <ul>
+      <% countries.forEach(function(country) { %>
+        <li><a href="/market/<%= country.code %>"><%= country.name %></a></li>
+      <% }) %>
+    </ul>
+  </main>
+</body>
+</html>

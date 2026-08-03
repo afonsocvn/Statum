@@ -74,9 +74,23 @@ Assumidas por mim (números concretos de balanceamento, a ajustar quando quisere
 - Um jogador só pode ter 1 emprego ativo ao mesmo tempo (em qualquer empresa).
 - Sem limite ao número de empresas que um jogador pode possuir.
 
+## 2026-07-31 — Mercado
+
+Decididas contigo:
+- Mercado por país (não global), negociado na moeda nacional desse país.
+- Listagens simples: vendedor define preço/quantidade, comprador compra na hora ao preço listado (sem livro de ordens).
+- Inclui câmbio de Gold ↔ moeda nacional — por agora é a única forma de obter Gold no jogo.
+- Ideia registada para o futuro: possibilidade de países aliados partilharem um único mercado em vez de terem mercados separados — depende de um sistema de alianças/diplomacia que ainda não existe. Não implementado agora.
+
+Assumidas por mim:
+- **Só cidadãos do país podem comprar/vender nesse mercado** (por agora). Isto evita ter de construir carteiras multi-moeda (cada jogador só tem 1 saldo de moeda nacional, o do seu próprio país). Jogadores de outros países podem ver a lista mas não negociar. Vai ser preciso revisitar isto para permitir comércio entre países.
+- Vendedor lista bens a partir do inventário de uma das suas próprias empresas nesse país; a quantidade é retirada do inventário da empresa no momento da criação do anúncio (não só quando vende).
+- Câmbio de Gold: só existe uma direção por agora — vender Gold por moeda nacional. Quem quer comprar Gold compra a um destes anúncios; ainda não há anúncios do tipo "quero comprar Gold oferecendo moeda nacional".
+- Bens comprados vão para um novo "inventário pessoal" do comprador (`user_inventory`), separado do inventário das empresas.
+- Sem taxas/impostos nas transações por agora.
+
 ## Próximas decisões pendentes
 
-- Regras do mercado.
 - Comportamento dos bots (económicos, militares, políticos).
 - Sistema militar/guerra.
 - Sistema político/eleições.
