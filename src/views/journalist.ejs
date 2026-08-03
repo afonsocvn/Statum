@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Statum - <%= journalist.username %> (Journalist)</title>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <%- include('partials/nav') %>
+
+  <main>
+    <h1><%= journalist.username %></h1>
+    <p><%= subscriberCount %> subscribers</p>
+
+    <% if (currentUser && currentUser.id !== journalist.id) { %>
+      <% if (isSubscribed) { %>
+        <form action="/press/journalists/<%= journalist.username %>/unsubscribe" method="POST">
+          <button type="submit">Unsubscribe</button>
+        </form>
+      <% } else { %>
+        <form action="/press/journalists/<%= journalist.username %>/subscribe" method="POST">
+          <button type="submit">Subscribe</button>
+        </form>
+      <% } %>
+    <% } %>
+
+    <h2>Articles</h2>
+    <% articles.forEach(function(article) { %>
+      <article>
+        <h3><%= article.title %></h3>
+        <p><%= article.created_at %> — <%= article.likes_count %> likes</p>
+        <p><%= article.body %></p>
+      </article>
+      <hr>
+    <% }) %>
+
+    <p><a href="/press">← Back to Press</a></p>
+  </main>
+</body>
+</html>

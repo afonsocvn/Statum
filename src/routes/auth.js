@@ -19,13 +19,20 @@ function countriesByContinent() {
 }
 
 router.get('/register', (req, res) => {
-  res.render('register', { error: null, username: '', countryId: '', byContinent: countriesByContinent() });
+  res.render('register', {
+    error: null,
+    username: '',
+    countryId: '',
+    ref: req.query.ref || '',
+    byContinent: countriesByContinent(),
+  });
 });
 
 router.post('/register', (req, res) => {
   const username = (req.body.username || '').trim();
   const password = req.body.password || '';
   const countryId = req.body.country_id || '';
+  const ref = (req.body.ref || '').trim();
   const byContinent = countriesByContinent();
 
   if (!USERNAME_RE.test(username)) {
@@ -33,6 +40,7 @@ router.post('/register', (req, res) => {
       error: 'Username must be 3-20 characters (letters, numbers, _).',
       username,
       countryId,
+      ref,
       byContinent,
     });
   }
@@ -42,13 +50,14 @@ router.post('/register', (req, res) => {
       error: 'Password must be at least 8 characters.',
       username,
       countryId,
+      ref,
       byContinent,
     });
   }
 
   const country = db.prepare('SELECT id FROM countries WHERE id = ?').get(countryId);
   if (!country) {
-    return res.render('register', { error: 'Please choose a valid country.', username, countryId, byContinent });
+    return res.render('register', { error: 'Please choose a valid country.', username, countryId, ref, byContinent });
   }
 
   const existing = db.prepare('SELECT id FROM users WHERE username = ?').get(username);
@@ -57,6 +66,7 @@ router.post('/register', (req, res) => {
       error: 'That username is already taken.',
       username,
       countryId,
+      ref,
       byContinent,
     });
   }
@@ -65,12 +75,23 @@ router.post('/register', (req, res) => {
     .prepare('SELECT id FROM regions WHERE country_id = ? AND is_capital = 1')
     .get(country.id);
 
+  const referrer = ref ? db.prepare('SELECT id FROM users WHERE username = ?').get(ref) : null;
+
   const passwordHash = bcrypt.hashSync(password, SALT_ROUNDS);
   const result = db
     .prepare(
-      'INSERT INTO users (username, password_hash, country_id, region_id, gold, national_currency) VALUES (?, ?, ?, ?, ?, ?)'
+      `INSERT INTO users (username, password_hash, country_id, region_id, gold, national_currency, referred_by_user_id)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`
     )
-    .run(username, passwordHash, country.id, capital.id, STARTING_GOLD, STARTING_NATIONAL_CURRENCY);
+    .run(
+      username,
+      passwordHash,
+      country.id,
+      capital.id,
+      STARTING_GOLD,
+      STARTING_NATIONAL_CURRENCY,
+      referrer ? referrer.id : null
+    );
 
   req.session.userId = result.lastInsertRowid;
   res.redirect('/');

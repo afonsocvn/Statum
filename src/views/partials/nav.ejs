@@ -4,14 +4,18 @@
   <a href="/companies">Companies</a>
   <a href="/market">Market</a>
   <a href="/battles">Battles</a>
+  <a href="/press">Press</a>
   <% if (currentUser) { %>
     <a href="/training">Training</a>
     <a href="/government/<%= currentUser.countryCode %>">My Government</a>
+    <a href="/bugs/report">Report Bug</a>
     <% if (currentUser.isAdmin) { %>
       <a href="/admin/wars">Admin: Wars</a>
+      <a href="/admin/bugs">Admin: Bugs</a>
     <% } %>
     <span>
       Logged in as <%= currentUser.username %> (<%= currentUser.countryName %>, <%= currentUser.regionName %>)
+      — Level <%= currentUser.level %> (<%= currentUser.xp %> XP)
       — <%= currentUser.gold %> Gold, <%= currentUser.nationalCurrency %> <%= currentUser.nationalCurrencyName %>,
       <%= currentUser.hp %> HP
     </span>

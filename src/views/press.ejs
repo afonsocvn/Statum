@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Statum - Press</title>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <%- include('partials/nav') %>
+
+  <main>
+    <h1>Press</h1>
+    <% if (currentUser) { %>
+      <p><a href="/press/new">+ Write an article</a></p>
+    <% } %>
+
+    <% articles.forEach(function(article) { %>
+      <article id="article-<%= article.id %>">
+        <h2><%= article.title %></h2>
+        <p>By <a href="/press/journalists/<%= article.authorUsername %>"><%= article.authorUsername %></a> — <%= article.created_at %></p>
+        <p><%= article.body %></p>
+        <p>
+          <%= article.likes_count %> likes
+          <% if (currentUser && !likedArticleIds.has(article.id)) { %>
+            <form action="/press/<%= article.id %>/like" method="POST" style="display:inline">
+              <button type="submit">Like</button>
+            </form>
+          <% } else if (likedArticleIds.has(article.id)) { %>
+            (you liked this)
+          <% } %>
+        </p>
+      </article>
+      <hr>
+    <% }) %>
+  </main>
+</body>
+</html>

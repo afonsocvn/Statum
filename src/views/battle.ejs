@@ -61,6 +61,18 @@
       </form>
     <% } %>
 
+    <% if (medals.length > 0) { %>
+      <h2>Medals</h2>
+      <ul>
+        <% medals.forEach(function(medal) { %>
+          <li>
+            <%= medal.username %> — <%= medal.medal_type %><%= medal.round_number ? ' (round ' + medal.round_number + ')' : '' %>
+            — <%= medal.gold_awarded %> Gold, <%= medal.xp_awarded %> XP
+          </li>
+        <% }) %>
+      </ul>
+    <% } %>
+
     <p><a href="/battles">← Back to battles</a></p>
   </main>
 </body>

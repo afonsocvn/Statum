@@ -45,7 +45,7 @@ const ERROR_MESSAGES = {
 function getOffices(countryId) {
   const rows = db
     .prepare(
-      `SELECT offices.*, users.username, users.total_damage
+      `SELECT offices.*, users.username, users.xp
        FROM offices
        JOIN users ON users.id = offices.user_id
        WHERE offices.country_id = ? AND offices.active = 1
@@ -69,7 +69,7 @@ router.get('/government/:code', (req, res, next) => {
 
   const presidentCandidates = db
     .prepare(
-      `SELECT candidacies.id, users.username, users.total_damage
+      `SELECT candidacies.id, users.username, users.xp
        FROM candidacies JOIN users ON users.id = candidacies.user_id
        WHERE candidacies.country_id = ? AND candidacies.office = 'president' AND candidacies.term_start = ?`
     )
@@ -77,7 +77,7 @@ router.get('/government/:code', (req, res, next) => {
 
   const congressCandidates = db
     .prepare(
-      `SELECT candidacies.id, users.username, users.total_damage
+      `SELECT candidacies.id, users.username, users.xp
        FROM candidacies JOIN users ON users.id = candidacies.user_id
        WHERE candidacies.country_id = ? AND candidacies.office = 'congress' AND candidacies.term_start = ?`
     )

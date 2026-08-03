@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS schema_meta (
   value TEXT NOT NULL
 );
 
-INSERT OR IGNORE INTO schema_meta (key, value) VALUES ('schema_version', '12');
+INSERT OR IGNORE INTO schema_meta (key, value) VALUES ('schema_version', '13');
 
 CREATE TABLE IF NOT EXISTS countries (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -40,6 +40,9 @@ CREATE TABLE IF NOT EXISTS users (
   is_admin INTEGER NOT NULL DEFAULT 0,
   hp INTEGER NOT NULL DEFAULT 100,
   total_damage INTEGER NOT NULL DEFAULT 0,
+  xp INTEGER NOT NULL DEFAULT 0,
+  level INTEGER NOT NULL DEFAULT 1,
+  referred_by_user_id INTEGER REFERENCES users(id),
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
@@ -184,4 +187,56 @@ CREATE TABLE IF NOT EXISTS appointment_votes (
   vote TEXT NOT NULL, -- yes, no
   created_at TEXT NOT NULL DEFAULT (datetime('now')),
   UNIQUE (proposal_id, voter_id)
+);
+
+-- Gold/XP faucets: medals, press, bug reports, referrals.
+
+CREATE TABLE IF NOT EXISTS medals (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL REFERENCES users(id),
+  battle_id INTEGER REFERENCES battles(id),
+  medal_type TEXT NOT NULL, -- attacker_round_mvp, defender_round_mvp, attacker_battle_hero, defender_battle_hero
+  round_number INTEGER,
+  gold_awarded INTEGER NOT NULL,
+  xp_awarded INTEGER NOT NULL,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS articles (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  author_id INTEGER NOT NULL REFERENCES users(id),
+  title TEXT NOT NULL,
+  body TEXT NOT NULL,
+  likes_count INTEGER NOT NULL DEFAULT 0,
+  gold_earned INTEGER NOT NULL DEFAULT 0,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS article_likes (
+  article_id INTEGER NOT NULL REFERENCES articles(id),
+  user_id INTEGER NOT NULL REFERENCES users(id),
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  PRIMARY KEY (article_id, user_id)
+);
+
+CREATE TABLE IF NOT EXISTS journalist_subscriptions (
+  journalist_id INTEGER NOT NULL REFERENCES users(id),
+  subscriber_id INTEGER NOT NULL REFERENCES users(id),
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  PRIMARY KEY (journalist_id, subscriber_id)
+);
+
+CREATE TABLE IF NOT EXISTS journalist_milestones (
+  journalist_id INTEGER NOT NULL REFERENCES users(id),
+  tier INTEGER NOT NULL, -- 50, 100, 150, ...
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  PRIMARY KEY (journalist_id, tier)
+);
+
+CREATE TABLE IF NOT EXISTS bug_reports (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  reporter_id INTEGER NOT NULL REFERENCES users(id),
+  description TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'pending', -- pending, rewarded, rejected
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );

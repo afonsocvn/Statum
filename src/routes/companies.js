@@ -2,6 +2,7 @@ const express = require('express');
 const db = require('../db');
 const goods = require('../db/goods-data');
 const { nationalCurrencyName } = require('../lib/currency');
+const { awardXp, XP_WORK } = require('../lib/xp');
 
 const router = express.Router();
 
@@ -186,6 +187,7 @@ router.post('/companies/:id/work', requireLogin, (req, res, next) => {
     db.prepare("UPDATE jobs SET last_worked_at = datetime('now') WHERE id = ?").run(job.id);
   });
   work();
+  awardXp(req.session.userId, XP_WORK);
 
   res.redirect(`/companies/${company.id}`);
 });

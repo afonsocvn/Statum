@@ -12,6 +12,8 @@ const trainingRouter = require('./routes/training');
 const adminRouter = require('./routes/admin');
 const battlesRouter = require('./routes/battles');
 const governmentRouter = require('./routes/government');
+const pressRouter = require('./routes/press');
+const bugsRouter = require('./routes/bugs');
 
 const app = express();
 
@@ -34,6 +36,7 @@ app.use((req, res, next) => {
         .prepare(
           `SELECT users.id, users.username, users.gold, users.national_currency AS nationalCurrency,
                   users.is_admin AS isAdmin, users.hp, users.total_damage AS totalDamage,
+                  users.xp, users.level,
                   countries.id AS countryId, countries.name AS countryName, countries.code AS countryCode,
                   regions.name AS regionName
            FROM users
@@ -58,6 +61,8 @@ app.use('/', trainingRouter);
 app.use('/', adminRouter);
 app.use('/', battlesRouter);
 app.use('/', governmentRouter);
+app.use('/', pressRouter);
+app.use('/', bugsRouter);
 app.use('/', indexRouter);
 
 app.use((req, res) => {
