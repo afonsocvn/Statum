@@ -4,6 +4,7 @@
   <a href="/companies">Companies</a>
   <a href="/market">Market</a>
   <% if (currentUser) { %>
+    <a href="/training">Training</a>
     <span>
       Logged in as <%= currentUser.username %> (<%= currentUser.countryName %>, <%= currentUser.regionName %>)
       — <%= currentUser.gold %> Gold, <%= currentUser.nationalCurrency %> <%= currentUser.nationalCurrencyName %>

@@ -8,6 +8,7 @@ const authRouter = require('./routes/auth');
 const countriesRouter = require('./routes/countries');
 const companiesRouter = require('./routes/companies');
 const marketRouter = require('./routes/market');
+const trainingRouter = require('./routes/training');
 
 const app = express();
 
@@ -48,6 +49,7 @@ app.use('/', authRouter);
 app.use('/', countriesRouter);
 app.use('/', companiesRouter);
 app.use('/', marketRouter);
+app.use('/', trainingRouter);
 app.use('/', indexRouter);
 
 app.use((req, res) => {

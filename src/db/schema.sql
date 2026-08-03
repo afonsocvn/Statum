@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS schema_meta (
   value TEXT NOT NULL
 );
 
-INSERT OR IGNORE INTO schema_meta (key, value) VALUES ('schema_version', '9');
+INSERT OR IGNORE INTO schema_meta (key, value) VALUES ('schema_version', '10');
 
 CREATE TABLE IF NOT EXISTS countries (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS regions (
   country_id INTEGER NOT NULL REFERENCES countries(id),
   name TEXT NOT NULL,
   is_capital INTEGER NOT NULL DEFAULT 0,
+  terrain TEXT NOT NULL DEFAULT 'terrestrial', -- semicolon-separated: naval;mountainous;terrestrial;desert
   UNIQUE (country_id, name)
 );
 
@@ -62,6 +63,16 @@ CREATE TABLE IF NOT EXISTS user_inventory (
   good_key TEXT NOT NULL,
   quantity INTEGER NOT NULL DEFAULT 0,
   PRIMARY KEY (user_id, good_key)
+);
+
+CREATE TABLE IF NOT EXISTS user_skills (
+  user_id INTEGER PRIMARY KEY REFERENCES users(id),
+  naval INTEGER NOT NULL DEFAULT 0,
+  mountainous INTEGER NOT NULL DEFAULT 0,
+  terrestrial INTEGER NOT NULL DEFAULT 0,
+  desert INTEGER NOT NULL DEFAULT 0,
+  unspent_points INTEGER NOT NULL DEFAULT 0,
+  last_trained_at TEXT
 );
 
 CREATE TABLE IF NOT EXISTS market_listings (

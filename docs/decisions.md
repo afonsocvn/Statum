@@ -112,7 +112,25 @@ Bots económicos (implementados):
 - Bots aparecem nas listagens de Empresas e Mercado como qualquer jogador, com a etiqueta "(bot)" a seguir ao nome.
 - Não conseguem fazer login (password_hash não é uma password válida).
 
+## 2026-07-31 — Sistema militar (em progresso)
+
+Decidido contigo, ainda a implementar:
+- Guerras conquistam território de verdade: uma região passa a pertencer ao país vencedor. Cidadania dos jogadores nunca muda; as empresas nessa região é que mudam de país (e passam a pagar impostos/salários na moeda do novo país).
+- Perícias por tipo de terreno (não uma "força" única): Naval, Mountainous, Terrestrial, Desert. Cada região tem 1 ou mais tipos de terreno, que dão bónus % à perícia correspondente numa batalha aí.
+- Guerra só pode ser declarada pelo Presidente com aprovação do Congresso, custa 50 Gold; abrir batalhas sem guerra declarada custa 100 Gold. **Isto depende do sistema político (cargos, congresso) que ainda não existe.** Decisão: por agora usamos uma regra temporária (a definir) até o sistema político existir, e substituímos depois pelo Presidente/Congresso reais.
+- Batalhas em rondas: jogadores têm vida, armas equipadas, e dão "hits" com hipótese de falha (miss) e de crítico. Quem causa mais dano numa ronda ganha essa ronda; quem ganha mais rondas ganha a batalha. Modelo inspirado no e-Sim.
+- Atribuição de terreno às 366 regiões: pedi-te uma folha Excel (`regions-terrain-template.xlsx`) para preencheres com base em geografia real (ou correndo noutro modelo de IA), em vez de um esquema genérico — ainda a aguardar esse ficheiro preenchido.
+
+Já implementado (não depende do terreno):
+- **Treino e perícias**: tabela `user_skills` (naval, mountainous, terrestrial, desert, unspent_points, last_trained_at).
+- Ação "Treinar" (`/training/train`) 1x/dia (cooldown 24h, igual ao trabalho), dá 5 pontos não distribuídos por treino.
+- Alocação livre dos pontos pelas 4 perícias (`/training/allocate`), validada para não exceder os pontos disponíveis.
+- Adicionada coluna `regions.terrain` (default `'terrestrial'`, formato `tipo1;tipo2` se a região tiver mais do que um), pronta a receber os dados reais do Excel.
+
+Ainda por implementar assim que o terreno chegar: guerras, batalhas, conquista de regiões, e a regra temporária de declaração de guerra.
+
 ## Próximas decisões pendentes
 
-- Sistema militar/guerra.
+- Regra temporária de quem pode declarar guerra (até existir Presidente/Congresso).
+- Números concretos da batalha (dano base, % de miss, % de crítico, número de rondas, duração de cada ronda).
 - Sistema político/eleições.
