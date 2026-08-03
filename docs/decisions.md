@@ -96,8 +96,23 @@ Assumidas por mim:
 - Tesouro visível na página do país e na página do mercado desse país.
 - Sem forma de gastar o tesouro ainda — isso deverá vir com o sistema político (governo poder ajustar taxas, gastar o tesouro, etc.).
 
+## 2026-07-31 — Bots
+
+Decidido contigo: implementar só os bots económicos agora (sistemas militar e político ainda não existem). Discutimos os 3 tipos, os outros dois ficam só como ideia registada para quando os respetivos sistemas existirem:
+
+- **Bots militares (futuro, não implementado)**: ideia — países/facções controladas por bots que dão aos jogadores algo para combater mesmo sem inimigos reais suficientes, e/ou garantem que países inativos não ficam totalmente indefesos numa guerra.
+- **Bots políticos (futuro, não implementado)**: ideia — candidatos NPC que se candidatam a eleições quando não há candidatos reais suficientes, para nenhum país ficar sem governo.
+
+Bots económicos (implementados):
+- 1 bot por país (61 no total), nome `bot_{código}` (ex: `bot_PT`), assinalado com `users.is_bot`.
+- Cada bot tem exatamente 1 empresa (bem atribuído por rotação simples entre os 8 bens), Q1, salário 0 (dono e trabalhador são o mesmo).
+- Bots começam com 1000 Gold + 1000 moeda nacional (dados diretamente na criação, não passam pelo registo normal) — só para poderem ter a sua empresa.
+- Mecanismo: tarefa periódica no processo do servidor (`setInterval`, a cada 1h por omissão, configurável via `BOT_TICK_INTERVAL_MS`), mais uma execução imediata no arranque. Cada bot só trabalha de facto 1x/dia, tal como jogadores reais (mesma regra de cooldown).
+- Depois de trabalhar, o bot lista toda a produção no mercado do seu país a um preço fixo por bem (`BASE_PRICES` em `src/lib/bots.js`) — números assumidos por mim, ajustáveis.
+- Bots aparecem nas listagens de Empresas e Mercado como qualquer jogador, com a etiqueta "(bot)" a seguir ao nome.
+- Não conseguem fazer login (password_hash não é uma password válida).
+
 ## Próximas decisões pendentes
 
-- Comportamento dos bots (económicos, militares, políticos).
 - Sistema militar/guerra.
 - Sistema político/eleições.

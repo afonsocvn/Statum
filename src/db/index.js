@@ -47,4 +47,7 @@ const seedRegions = db.transaction(() => {
 });
 seedRegions();
 
+const { seedBots } = require('../lib/bots');
+seedBots(db);
+
 module.exports = db;

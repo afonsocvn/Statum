@@ -49,7 +49,8 @@ function companyWithDetails(company) {
 router.get('/companies', (req, res) => {
   const companies = db
     .prepare(
-      `SELECT companies.*, countries.name AS countryName, regions.name AS regionName, users.username AS ownerUsername
+      `SELECT companies.*, countries.name AS countryName, regions.name AS regionName,
+              users.username AS ownerUsername, users.is_bot AS ownerIsBot
        FROM companies
        JOIN countries ON countries.id = companies.country_id
        JOIN regions ON regions.id = companies.region_id

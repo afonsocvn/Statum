@@ -45,7 +45,7 @@ router.get('/market/:code', (req, res, next) => {
 
   const goodListings = db
     .prepare(
-      `SELECT market_listings.*, users.username AS sellerUsername
+      `SELECT market_listings.*, users.username AS sellerUsername, users.is_bot AS sellerIsBot
        FROM market_listings
        JOIN users ON users.id = market_listings.seller_id
        WHERE market_listings.country_id = ? AND market_listings.item_type = 'good'
@@ -56,7 +56,7 @@ router.get('/market/:code', (req, res, next) => {
 
   const goldListings = db
     .prepare(
-      `SELECT market_listings.*, users.username AS sellerUsername
+      `SELECT market_listings.*, users.username AS sellerUsername, users.is_bot AS sellerIsBot
        FROM market_listings
        JOIN users ON users.id = market_listings.seller_id
        WHERE market_listings.country_id = ? AND market_listings.item_type = 'gold'

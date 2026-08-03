@@ -36,7 +36,7 @@
             <td><%= listing.goodName %></td>
             <td><%= listing.quantity %></td>
             <td><%= listing.price_per_unit %> <%= currencyName %></td>
-            <td><%= listing.sellerUsername %></td>
+            <td><%= listing.sellerUsername %><%= listing.sellerIsBot ? ' (bot)' : '' %></td>
             <% if (isCitizen) { %>
               <td>
                 <form action="/market/listings/<%= listing.id %>/buy" method="POST" style="display:inline">
@@ -65,7 +65,7 @@
           <tr>
             <td><%= listing.quantity %></td>
             <td><%= listing.price_per_unit %> <%= currencyName %></td>
-            <td><%= listing.sellerUsername %></td>
+            <td><%= listing.sellerUsername %><%= listing.sellerIsBot ? ' (bot)' : '' %></td>
             <% if (isCitizen) { %>
               <td>
                 <form action="/market/listings/<%= listing.id %>/buy" method="POST" style="display:inline">

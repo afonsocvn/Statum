@@ -28,7 +28,7 @@
             <td><a href="/companies/<%= company.id %>"><%= company.goodName %></a> (<%= company.goodCategory %>)</td>
             <td>Q<%= company.quality_level %></td>
             <td><%= company.regionName %>, <%= company.countryName %></td>
-            <td><%= company.ownerUsername %></td>
+            <td><%= company.ownerUsername %><%= company.ownerIsBot ? ' (bot)' : '' %></td>
             <td><%= company.salary %> <%= company.currencyName %></td>
             <td><%= company.workerId ? 'Filled' : 'Open' %></td>
           </tr>
