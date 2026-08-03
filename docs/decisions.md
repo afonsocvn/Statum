@@ -143,7 +143,27 @@ Decidido contigo:
 - **Bug encontrado e corrigido durante os testes**: a rotina que garante que cada país tem as suas 6 regiões corria em todos os arranques do servidor, o que "repunha" uma região conquistada ao dono original (porque deixava de encontrar uma região com o nome/país originais). Corrigido para só semear as regiões uma única vez (controlado por uma flag em `schema_meta`). Testado com reinício do servidor a confirmar que a conquista persiste.
 - Testado: guerra, abertura de batalha, ataque (com e sem arma), gasto/recuperação de vida, validações de erro, avanço de rondas, vitória, conquista de região (incluindo mudança de país de uma empresa lá localizada).
 
+## 2026-08-03 — Sistema político e eleições
+
+Decidido contigo:
+- Presidente (1 por país) + Congresso. Assentos do Congresso = 1 por território atual do país, mínimo 5 mesmo com 0 territórios ("governo em exílio" com Presidente + 5 congressistas). Congressistas não representam um território específico — o território só conta para o número de assentos.
+- Eleições (Presidente e Congresso): voto de todos os cidadãos do país; ganham os mais votados; empate resolvido pelo maior XP (usei `total_damage` como proxy, já que não existe outra stat de "experiência").
+- Presidente: mandato de 1 mês, candidatura nos últimos 3 dias do mês, eleição no último dia, mandato começa no dia 1.
+- Congresso: mesmo processo a meio do mês (candidatura dias 12-14, eleição dia 15, mandato começa dia 16 — interpretação minha de "a meio do mês").
+- Candidatura (Presidente ou Congresso) custa 20 Gold. Presidente eleito ganha acesso à conta do governo (tesouro).
+- Cargos especiais (General, Finance Minister, Secretary of State): o Presidente pode propor **qualquer cidadão**, não só congressistas — clarificação tua a meio da implementação, ajustei o esquema para isso. Precisa de aprovação do Congresso. Se o nomeado já for congressista, o lugar dele só passa a ter o título extra; se não for, ganha um lugar novo "a atuar como congressista".
+- General: único que pode declarar guerra e abrir batalhas em nome do país — substitui a regra temporária "só o Admin declara guerra" (o Admin mantém-se como via de recurso extra, em `/admin/wars`).
+- Ministro das Finanças: único que pode "imprimir" moeda nacional (adiciona ao tesouro do governo).
+- Secretário de Estado: torna-se "diplomata", proporia alianças internacionais — só o título, sistema de alianças ainda não existe.
+
+Assumido por mim (números não especificados):
+- Maioria para aprovar nomeações do Congresso: mais de metade dos assentos ativos do país (não só dos votos, dos assentos todos).
+- Sem limite/custo aplicado à impressão de moeda pelo Ministro das Finanças (confia-se no cargo).
+- Taxa de candidatura (20 Gold) não é reembolsada, ganhe ou perca o candidato.
+
+Testado: eleição do Congresso (com mínimo de 5 assentos mesmo com poucos candidatos, desempate por XP), eleição do Presidente, proposta e aprovação de nomeação (incluindo caso de nomeado que não era congressista, ganhando lugar novo), General a declarar guerra e abrir batalha, Ministro das Finanças a imprimir moeda, bloqueios corretos para quem não tem o cargo.
+
 ## Próximas decisões pendentes
 
-- Substituir a regra temporária de guerra (Admin) por Presidente + Congresso, e aplicar os custos em Gold (50 para declarar guerra, 100 para abrir batalha sem guerra declarada) a essa altura.
-- Sistema político/eleições.
+- Sistema de alianças internacionais (poder do Secretary of State).
+- Ajustar carteiras multi-moeda para permitir comércio entre países no Mercado.

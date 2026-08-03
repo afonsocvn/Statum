@@ -76,16 +76,26 @@ Inspiração de género: jogos tipo e-Sim/eRepublik/Politics & War. Só mecânic
 - **Rank militar**: cresce com o dano total acumulado (`users.total_damage`); dá um bónus % ao dano (Recruit 0% → Major +12%, tabela em `src/lib/military.js`).
 - **Fórmula de dano por hit**: `10 (base) + perícia_relevante × (1 + bónus_terreno)`, depois aplicado o multiplicador da arma e do rank. Bónus de terreno: naval/mountainous/desert = +30%, terrestrial = +10%. Se a região tiver vários terrenos, usa-se o que der mais dano.
 - **Miss/crítico**: 10% de falha (0 dano), 15% de crítico (x2 dano).
-- **Guerra**: por agora só o **Admin** pode declarar (regra temporária até existir Presidente/Congresso). Sem custo em Gold aplicado nesta fase.
+- **Guerra**: só o **General** de um país pode declarar guerra e abrir batalhas em nome desse país (ver secção Político). O Admin mantém-se como capacidade extra de recurso (`/admin/wars`), sem custo em Gold aplicado.
 - **Batalha**: por região. 8 rondas de 2h; ganha quem vencer 5 rondas primeiro. Ronda ganha-se por quem causar mais dano nela. Empate 4-4 ao fim de 8 rondas → prolongamento de 3 rondas de 1h, ganha quem vencer 2 dessas 3.
 - **Conquista**: vencer a batalha transfere a região para o país vencedor (região é renomeada para `{Nome} ({País original})`); as empresas nessa região mudam de país. Cidadania dos jogadores nunca muda.
 - Avanço de rondas corre numa tarefa periódica no servidor (a cada minuto).
 
 ## Político / Eleições
 
-- Ainda não implementado. Vai substituir a regra temporária de "Admin declara guerra" por Presidente + Congresso, e introduzir os custos em Gold para guerra (50) e batalha sem guerra declarada (100).
+- **Cargos**: Presidente (1 por país) + Congresso. Assentos do Congresso = máximo(5, nº de regiões que o país possui atualmente) — nunca menos de 5, mesmo com 0 territórios ("governo em exílio").
+- **Eleições**: voto de todos os cidadãos do país (sem distinção de região/território — os territórios só contam para o nº de assentos). Ganham os mais votados; empates resolvidos por `total_damage` (XP), maior ganha.
+- **Ciclo do Presidente**: mandato de 1 mês (mês de calendário real). Candidatura nos últimos 3 dias do mês. Eleição no último dia do mês. Mandato novo começa no dia 1.
+- **Ciclo do Congresso**: mesmo formato, a meio do mês — candidatura dias 12-14, eleição dia 15, mandato começa dia 16.
+- **Candidatura**: qualquer cidadão pode candidatar-se (Presidente ou Congresso), custa 20 Gold.
+- **Presidente eleito**: ganha acesso ao tesouro do governo (`countries.treasury`, `countries.president_user_id`).
+- **Cargos especiais** (General, Finance Minister, Secretary of State): o Presidente propõe **qualquer cidadão** (não precisa de já ser congressista) para um destes cargos; precisa de aprovação por maioria simples do Congresso atual (mais de metade dos assentos ativos). Se o nomeado já for congressista, o lugar dele é só atualizado com o título; se não for, ganha um lugar extra "a atuar como congressista" (conta para votos futuros de nomeação, por exemplo).
+  - **General**: único que pode declarar guerra e abrir batalhas em nome do país.
+  - **Finance Minister**: único que pode "imprimir" moeda nacional (adiciona diretamente ao tesouro do governo).
+  - **Secretary of State**: torna-se "diplomata", ficaria responsável por propor alianças internacionais — só o título está implementado, o sistema de alianças em si não existe ainda.
+- Avanço das eleições corre numa tarefa periódica no servidor (verifica a data real do calendário).
 
 ## Infraestrutura de fundo
 
-- Tarefas periódicas no processo do servidor (`src/server.js`): bots económicos (`BOT_TICK_INTERVAL_MS`, omissão 1h) e avanço de rondas de batalha (`BATTLE_TICK_INTERVAL_MS`, omissão 1min).
+- Tarefas periódicas no processo do servidor (`src/server.js`): bots económicos (`BOT_TICK_INTERVAL_MS`, omissão 1h), avanço de rondas de batalha (`BATTLE_TICK_INTERVAL_MS`, omissão 1min), e apuramento de eleições (`ELECTION_TICK_INTERVAL_MS`, omissão 1h).
 - Admin: definido por variável de ambiente `ADMIN_USERNAME` no arranque do servidor (atribui `is_admin=1` a esse username, se existir).

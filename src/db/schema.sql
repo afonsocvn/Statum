@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS schema_meta (
   value TEXT NOT NULL
 );
 
-INSERT OR IGNORE INTO schema_meta (key, value) VALUES ('schema_version', '11');
+INSERT OR IGNORE INTO schema_meta (key, value) VALUES ('schema_version', '12');
 
 CREATE TABLE IF NOT EXISTS countries (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -15,7 +15,8 @@ CREATE TABLE IF NOT EXISTS countries (
   code TEXT NOT NULL UNIQUE,
   continent TEXT NOT NULL,
   population INTEGER NOT NULL,
-  treasury INTEGER NOT NULL DEFAULT 0
+  treasury INTEGER NOT NULL DEFAULT 0,
+  president_user_id INTEGER REFERENCES users(id)
 );
 
 CREATE TABLE IF NOT EXISTS regions (
@@ -131,4 +132,56 @@ CREATE TABLE IF NOT EXISTS battle_hits (
   hits INTEGER NOT NULL,
   damage INTEGER NOT NULL,
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+-- Political system. Offices hold current officeholders; special roles
+-- (general, finance_minister, secretary_of_state) are congress members who
+-- also carry that title, not extra seats.
+CREATE TABLE IF NOT EXISTS offices (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  country_id INTEGER NOT NULL REFERENCES countries(id),
+  role TEXT NOT NULL, -- president, congress_member, general, finance_minister, secretary_of_state
+  user_id INTEGER NOT NULL REFERENCES users(id),
+  term_start TEXT NOT NULL, -- YYYY-MM-DD
+  active INTEGER NOT NULL DEFAULT 1
+);
+
+CREATE TABLE IF NOT EXISTS candidacies (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  country_id INTEGER NOT NULL REFERENCES countries(id),
+  office TEXT NOT NULL, -- president, congress
+  user_id INTEGER NOT NULL REFERENCES users(id),
+  term_start TEXT NOT NULL,
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  UNIQUE (country_id, office, user_id, term_start)
+);
+
+CREATE TABLE IF NOT EXISTS election_votes (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  country_id INTEGER NOT NULL REFERENCES countries(id),
+  office TEXT NOT NULL,
+  term_start TEXT NOT NULL,
+  voter_id INTEGER NOT NULL REFERENCES users(id),
+  candidacy_id INTEGER NOT NULL REFERENCES candidacies(id),
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  UNIQUE (country_id, office, term_start, voter_id)
+);
+
+CREATE TABLE IF NOT EXISTS appointment_proposals (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  country_id INTEGER NOT NULL REFERENCES countries(id),
+  role TEXT NOT NULL, -- general, finance_minister, secretary_of_state
+  target_user_id INTEGER NOT NULL REFERENCES users(id), -- any citizen, not necessarily a sitting congress member
+  proposed_by INTEGER NOT NULL REFERENCES users(id),
+  status TEXT NOT NULL DEFAULT 'pending', -- pending, approved, rejected
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS appointment_votes (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  proposal_id INTEGER NOT NULL REFERENCES appointment_proposals(id),
+  voter_id INTEGER NOT NULL REFERENCES users(id),
+  vote TEXT NOT NULL, -- yes, no
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  UNIQUE (proposal_id, voter_id)
 );
