@@ -11,6 +11,7 @@ const marketRouter = require('./routes/market');
 const trainingRouter = require('./routes/training');
 const adminRouter = require('./routes/admin');
 const battlesRouter = require('./routes/battles');
+const governmentRouter = require('./routes/government');
 
 const app = express();
 
@@ -56,6 +57,7 @@ app.use('/', marketRouter);
 app.use('/', trainingRouter);
 app.use('/', adminRouter);
 app.use('/', battlesRouter);
+app.use('/', governmentRouter);
 app.use('/', indexRouter);
 
 app.use((req, res) => {

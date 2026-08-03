@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Statum - <%= country.name %> Government</title>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <%- include('partials/nav') %>
+
+  <main>
+    <h1><%= country.name %> Government</h1>
+
+    <% if (message) { %>
+      <p style="color: green;"><%= message %></p>
+    <% } %>
+    <% if (error) { %>
+      <p style="color: red;"><%= error %></p>
+    <% } %>
+
+    <h2>President</h2>
+    <% if (offices.president) { %>
+      <p><%= offices.president.username %></p>
+    <% } else { %>
+      <p><em>No President elected yet.</em></p>
+    <% } %>
+
+    <h2>Congress (<%= offices.congress.length %> / <%= seats %> base seats)</h2>
+    <table>
+      <thead>
+        <tr><th>Member</th><th>Role</th></tr>
+      </thead>
+      <tbody>
+        <% offices.congress.forEach(function(seat) { %>
+          <tr>
+            <td><%= seat.username %></td>
+            <td><%= seat.role %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+    <p><em>Congress has at least 5 seats always, even if the country loses all its territory. Seats scale with the number of regions currently owned.</em></p>
+
+    <h2>Elections</h2>
+    <p>President cycle: candidacy <%= president.candidacyOpen ? 'OPEN' : 'closed' %>, election day is the last day of the month. Next term starts <%= president.termStart %>.</p>
+    <p>Congress cycle: candidacy <%= congress.candidacyOpen ? 'OPEN' : 'closed' %>, election day is the 15th. Next term starts <%= congress.termStart %>.</p>
+
+    <% if (citizen) { %>
+      <h3>Register as candidate (costs <%= candidacyFee %> Gold)</h3>
+      <form action="/government/<%= country.code %>/candidacy" method="POST" style="display:inline">
+        <button type="submit" name="office" value="president">Run for President</button>
+      </form>
+      <form action="/government/<%= country.code %>/candidacy" method="POST" style="display:inline">
+        <button type="submit" name="office" value="congress">Run for Congress</button>
+      </form>
+    <% } %>
+
+    <h3>President candidates (this term)</h3>
+    <ul>
+      <% presidentCandidates.forEach(function(c) { %>
+        <li>
+          <%= c.username %>
+          <% if (citizen && president.isElectionDay) { %>
+            <form action="/government/<%= country.code %>/vote" method="POST" style="display:inline">
+              <input type="hidden" name="candidacy_id" value="<%= c.id %>">
+              <button type="submit">Vote</button>
+            </form>
+          <% } %>
+        </li>
+      <% }) %>
+    </ul>
+
+    <h3>Congress candidates (this term)</h3>
+    <ul>
+      <% congressCandidates.forEach(function(c) { %>
+        <li>
+          <%= c.username %>
+          <% if (citizen && congress.isElectionDay) { %>
+            <form action="/government/<%= country.code %>/vote" method="POST" style="display:inline">
+              <input type="hidden" name="candidacy_id" value="<%= c.id %>">
+              <button type="submit">Vote</button>
+            </form>
+          <% } %>
+        </li>
+      <% }) %>
+    </ul>
+
+    <% if (isPresident) { %>
+      <h2>President's powers</h2>
+      <form action="/government/<%= country.code %>/appoint" method="POST">
+        <div>
+          <label for="target_username">Citizen username</label>
+          <input type="text" id="target_username" name="target_username" required>
+        </div>
+        <div>
+          <label for="role">Role</label>
+          <select id="role" name="role">
+            <option value="general">General (can declare war / open battles)</option>
+            <option value="finance_minister">Finance Minister (can print currency)</option>
+            <option value="secretary_of_state">Secretary of State (diplomat)</option>
+          </select>
+        </div>
+        <button type="submit">Propose appointment</button>
+      </form>
+    <% } %>
+
+    <% if (pendingProposals.length > 0) { %>
+      <h2>Pending appointment proposals</h2>
+      <ul>
+        <% pendingProposals.forEach(function(p) { %>
+          <li>
+            <%= p.targetUsername %> → <%= p.role %>
+            <% if (myCongressSeat) { %>
+              <form action="/government/<%= country.code %>/appointment/<%= p.id %>/vote" method="POST" style="display:inline">
+                <button type="submit" name="vote" value="yes">Yes</button>
+                <button type="submit" name="vote" value="no">No</button>
+              </form>
+            <% } %>
+          </li>
+        <% }) %>
+      </ul>
+    <% } %>
+
+    <% if (isGeneral) { %>
+      <h2>General's powers</h2>
+      <form action="/government/<%= country.code %>/declare-war" method="POST">
+        <label for="defender_country_id">Declare war on</label>
+        <select id="defender_country_id" name="defender_country_id">
+          <% otherCountries.forEach(function(c) { %>
+            <option value="<%= c.id %>"><%= c.name %></option>
+          <% }) %>
+        </select>
+        <button type="submit">Declare war</button>
+      </form>
+
+      <% if (activeWars.length > 0) { %>
+        <h3>Open a battle in an active war</h3>
+        <% activeWars.forEach(function(war) { %>
+          <form action="/government/<%= country.code %>/wars/<%= war.id %>/battles" method="POST">
+            <label>War vs <%= war.defenderName %> — region ID to attack:</label>
+            <input type="number" name="region_id" required>
+            <button type="submit">Open battle</button>
+          </form>
+        <% }) %>
+      <% } %>
+    <% } %>
+
+    <% if (isFinanceMinister) { %>
+      <h2>Finance Minister's powers</h2>
+      <p>Treasury: <%= country.treasury %></p>
+      <form action="/government/<%= country.code %>/print-currency" method="POST">
+        <label for="amount">Amount to print into the treasury</label>
+        <input type="number" id="amount" name="amount" min="1" required>
+        <button type="submit">Print currency</button>
+      </form>
+    <% } %>
+
+    <p><a href="/countries/<%= country.code %>">← Back to <%= country.name %></a></p>
+  </main>
+</body>
+</html>
