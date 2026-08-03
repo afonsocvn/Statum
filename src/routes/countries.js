@@ -28,7 +28,7 @@ router.get('/countries', (req, res) => {
 
 router.get('/countries/:code', (req, res, next) => {
   const country = db
-    .prepare('SELECT id, name, code, continent, population FROM countries WHERE code = ?')
+    .prepare('SELECT id, name, code, continent, population, treasury FROM countries WHERE code = ?')
     .get(req.params.code.toUpperCase());
 
   if (!country) return next();

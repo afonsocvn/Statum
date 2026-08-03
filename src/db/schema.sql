@@ -7,14 +7,15 @@ CREATE TABLE IF NOT EXISTS schema_meta (
   value TEXT NOT NULL
 );
 
-INSERT OR IGNORE INTO schema_meta (key, value) VALUES ('schema_version', '7');
+INSERT OR IGNORE INTO schema_meta (key, value) VALUES ('schema_version', '8');
 
 CREATE TABLE IF NOT EXISTS countries (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT NOT NULL UNIQUE,
   code TEXT NOT NULL UNIQUE,
   continent TEXT NOT NULL,
-  population INTEGER NOT NULL
+  population INTEGER NOT NULL,
+  treasury INTEGER NOT NULL DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS regions (

@@ -87,7 +87,14 @@ Assumidas por mim:
 - Vendedor lista bens a partir do inventário de uma das suas próprias empresas nesse país; a quantidade é retirada do inventário da empresa no momento da criação do anúncio (não só quando vende).
 - Câmbio de Gold: só existe uma direção por agora — vender Gold por moeda nacional. Quem quer comprar Gold compra a um destes anúncios; ainda não há anúncios do tipo "quero comprar Gold oferecendo moeda nacional".
 - Bens comprados vão para um novo "inventário pessoal" do comprador (`user_inventory`), separado do inventário das empresas.
-- Sem taxas/impostos nas transações por agora.
+
+## 2026-07-31 — Imposto sobre vendas
+
+- 5% de imposto sobre vendas de bens no mercado, vai diretamente para o tesouro do governo do país (`countries.treasury`, na moeda nacional desse país).
+- Aplica-se só a bens, não ao câmbio de Gold.
+- Sai do vendedor: comprador paga o preço listado; vendedor recebe 95%; o governo recebe os 5% restantes. Preço que o comprador vê/paga não muda.
+- Tesouro visível na página do país e na página do mercado desse país.
+- Sem forma de gastar o tesouro ainda — isso deverá vir com o sistema político (governo poder ajustar taxas, gastar o tesouro, etc.).
 
 ## Próximas decisões pendentes
 

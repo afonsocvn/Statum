@@ -11,6 +11,7 @@
     <h1><%= country.flag %> <%= country.name %></h1>
     <p><%= country.continent %> — <%= country.population.toLocaleString('en-US') %> inhabitants</p>
     <p>National currency: <%= country.currencyName %></p>
+    <p>Government treasury: <%= country.treasury.toLocaleString('en-US') %> <%= country.currencyName %></p>
 
     <h2>Regions</h2>
     <ul>

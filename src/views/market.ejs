@@ -9,7 +9,7 @@
 
   <main>
     <h1><%= country.name %> Market</h1>
-    <p>Traded in <%= currencyName %>.</p>
+    <p>Traded in <%= currencyName %>. A 5% sales tax on goods goes to the government treasury (currently <%= country.treasury.toLocaleString('en-US') %> <%= currencyName %>).</p>
 
     <% if (error) { %>
       <p style="color: red;"><%= error %></p>

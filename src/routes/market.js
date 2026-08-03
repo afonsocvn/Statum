@@ -5,6 +5,8 @@ const { nationalCurrencyName } = require('../lib/currency');
 
 const router = express.Router();
 
+const SALES_TAX_RATE = 0.05;
+
 function requireLogin(req, res, next) {
   if (!req.session.userId) return res.redirect('/login');
   next();
@@ -172,9 +174,15 @@ router.post('/market/listings/:id/buy', requireLogin, (req, res, next) => {
     return res.redirect(`/market/${country.code}?error=cannot_afford`);
   }
 
+  const tax = listing.item_type === 'good' ? Math.floor(totalPrice * SALES_TAX_RATE) : 0;
+  const sellerProceeds = totalPrice - tax;
+
   const buy = db.transaction(() => {
     db.prepare('UPDATE users SET national_currency = national_currency - ? WHERE id = ?').run(totalPrice, buyer.id);
-    db.prepare('UPDATE users SET national_currency = national_currency + ? WHERE id = ?').run(totalPrice, listing.seller_id);
+    db.prepare('UPDATE users SET national_currency = national_currency + ? WHERE id = ?').run(sellerProceeds, listing.seller_id);
+    if (tax > 0) {
+      db.prepare('UPDATE countries SET treasury = treasury + ? WHERE id = ?').run(tax, country.id);
+    }
 
     if (listing.item_type === 'gold') {
       db.prepare('UPDATE users SET gold = gold + ? WHERE id = ?').run(quantity, buyer.id);
