@@ -1,6 +1,8 @@
 # Histórico de decisões — Statum
 
-Este ficheiro regista decisões importantes tomadas ao longo do desenvolvimento, para não se perder o histórico.
+Este ficheiro regista decisões importantes tomadas ao longo do desenvolvimento, para não se perder o histórico (é um registo cronológico, por ordem de quando foi decidido).
+
+Para o estado **atual** das regras do jogo, organizado por sistema (não por data), ver [`docs/game-design.md`](game-design.md).
 
 ## 2026-07-31 — Decisões iniciais de stack e modo de trabalho
 
