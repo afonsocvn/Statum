@@ -84,7 +84,7 @@ Inspiração de género: jogos tipo e-Sim/eRepublik/Politics & War. Só mecânic
 ## Político / Eleições
 
 - **Cargos**: Presidente (1 por país) + Congresso. Assentos do Congresso = máximo(5, nº de regiões que o país possui atualmente) — nunca menos de 5, mesmo com 0 territórios ("governo em exílio").
-- **Eleições**: voto de todos os cidadãos do país (sem distinção de região/território — os territórios só contam para o nº de assentos). Ganham os mais votados; empates resolvidos por `total_damage` (XP), maior ganha.
+- **Eleições**: voto de todos os cidadãos do país (sem distinção de região/território — os territórios só contam para o nº de assentos). Ganham os mais votados; empates resolvidos por `users.xp`, maior ganha.
 - **Ciclo do Presidente**: mandato de 1 mês (mês de calendário real). Candidatura nos últimos 3 dias do mês. Eleição no último dia do mês. Mandato novo começa no dia 1.
 - **Ciclo do Congresso**: mesmo formato, a meio do mês — candidatura dias 12-14, eleição dia 15, mandato começa dia 16.
 - **Candidatura**: qualquer cidadão pode candidatar-se (Presidente ou Congresso), custa 20 Gold.
@@ -94,6 +94,38 @@ Inspiração de género: jogos tipo e-Sim/eRepublik/Politics & War. Só mecânic
   - **Finance Minister**: único que pode "imprimir" moeda nacional (adiciona diretamente ao tesouro do governo).
   - **Secretary of State**: torna-se "diplomata", ficaria responsável por propor alianças internacionais — só o título está implementado, o sistema de alianças em si não existe ainda.
 - Avanço das eleições corre numa tarefa periódica no servidor (verifica a data real do calendário).
+
+## Níveis e XP
+
+- Cada jogador tem `xp` (acumulado, nunca desce) e `level` (calculado a partir do xp: nível `n` precisa de `25 × n × (n-1)` XP acumulado — nível 2=50, 3=150, 4=300, 5=500, 6=750, 7=1050...).
+- Fontes de XP (`src/lib/xp.js`):
+  - Hit em batalha: 1 XP por hit.
+  - Treinar: 10 XP. Trabalhar: 10 XP.
+  - Medalha de ronda (MVP de dano): 20 XP.
+  - Medalha de Herói de Batalha: 100 XP.
+  - Entrada no Congresso: 300 XP. Presidente: 2000 XP.
+  - Marco de subscritores de jornalista: 50 XP.
+  - Bug report aprovado: 50 XP.
+  - Bónus de referral (para quem convidou): 20 XP.
+- O nível usa-se como critério de desempate nas eleições (ver secção Político) e como gatilho do bónus de referral (nível 5).
+
+## Medalhas de batalha
+
+- **MVP de ronda**: quem causa mais dano total numa ronda, por lado (1 atacante + 1 defensor por ronda) — 5 Gold + 20 XP cada.
+- **Herói de Batalha**: quando uma batalha termina, quem causou mais dano total (somado por todas as rondas) do lado **vencedor** recebe uma medalha diferente (`attacker_battle_hero` ou `defender_battle_hero`) — 25 Gold + 100 XP.
+- Registadas em `medals`, visíveis na página da batalha.
+
+## Imprensa (Jornalismo)
+
+- Qualquer jogador pode escrever artigos (`/press/new`) — não é preciso um cargo especial de "jornalista".
+- **Likes**: 1 like por utilizador por artigo. O autor ganha Gold = 5% do total de likes do artigo, pago de forma incremental a cada like que cruza um múltiplo de 20 (100 likes = 5 Gold).
+- **Subscritores**: por patamares de 50 (50, 100, 150...). Ao atingir um novo patamar pela primeira vez, o autor ganha Gold = (patamar/50)×5 + 50 XP, uma única vez por patamar.
+- Sem edição/remoção de artigos nesta primeira versão.
+
+## Bugs e Referral
+
+- **Reportar bugs** (`/bugs/report`): qualquer jogador pode submeter uma descrição. Um Admin aprova (`/admin/bugs`) e só aí é pago o prémio: 10 Gold + 50 XP.
+- **Referral**: no registo, campo opcional "Referred by" com o username de quem convidou (`users.referred_by_user_id`). Quando o convidado atinge o **nível 5** pela primeira vez, quem o convidou recebe 10 Gold + 20 XP. Só dispara uma vez (na transição de nível, não em cada XP ganho depois).
 
 ## Infraestrutura de fundo
 

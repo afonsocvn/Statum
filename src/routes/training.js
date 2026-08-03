@@ -1,5 +1,6 @@
 const express = require('express');
 const db = require('../db');
+const { awardXp, XP_TRAIN } = require('../lib/xp');
 
 const router = express.Router();
 
@@ -38,6 +39,7 @@ router.post('/training/train', requireLogin, (req, res) => {
   db.prepare(
     "UPDATE user_skills SET unspent_points = unspent_points + ?, last_trained_at = datetime('now') WHERE user_id = ?"
   ).run(POINTS_PER_TRAINING, req.session.userId);
+  awardXp(req.session.userId, XP_TRAIN);
 
   res.redirect('/training');
 });

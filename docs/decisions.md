@@ -163,7 +163,35 @@ Assumido por mim (números não especificados):
 
 Testado: eleição do Congresso (com mínimo de 5 assentos mesmo com poucos candidatos, desempate por XP), eleição do Presidente, proposta e aprovação de nomeação (incluindo caso de nomeado que não era congressista, ganhando lugar novo), General a declarar guerra e abrir batalha, Ministro das Finanças a imprimir moeda, bloqueios corretos para quem não tem o cargo.
 
+## 2026-08-03 — Sistemas de geração de Gold e XP (para resolver o problema de escassez de Gold numa beta pequena)
+
+Motivação: identificámos que numa beta com poucos jogadores por país, o total de Gold em circulação podia nunca chegar a 50 (custo de criar empresa), porque não havia nenhuma "torneira" de Gold além do câmbio entre jogadores. Este conjunto de sistemas resolve isso.
+
+Decidido contigo:
+- Medalha de MVP de ronda de batalha (por lado): 5 Gold.
+- Entrada no Congresso: 10 Gold. Presidente: 20 Gold.
+- Jornalismo: Gold por like de artigo (5% dos likes) + bónus por patamares de subscritores (50→5g, 100→10g, 150→15g...).
+- Sistema de níveis: 1 XP por hit em batalha, 10 XP por treino, 10 XP por trabalho. Medalhas e cargos dão XP muito maior que combate (pedido explícito teu, para não ficar tão focado em militar como o e-Sim: um dia inteiro de combate máximo ronda os 500 XP; tornar-se Presidente dá 2000 XP, um salto claramente maior).
+- Medalha extra "Herói de Batalha": quem causa mais dano total (todas as rondas) do lado vencedor, distinta da medalha de MVP de ronda e distinta entre atacante/defensor (mesmo valor, nomes diferentes).
+- Reportar bugs: 10 Gold (aprovado por um Admin).
+- Referral: convidar jogador que chega ao nível 5 dá 10 Gold a quem convidou.
+
+Assumido por mim (números não especificados, ajustáveis):
+- Curva de níveis: XP acumulado para o nível `n` = `25 × n × (n-1)` (nível 2=50, 3=150, 4=300, 5=500, 6=750...). Ritmo pensado para ~2 semanas até nível 5 com jogo casual (treino+trabalho diários).
+- Valores de XP por fonte: 20 XP por medalha de ronda, 100 XP por Herói de Batalha, 300 XP por entrada no Congresso, 2000 XP por Presidente (aumentados a pedido teu face à proposta inicial mais baixa), 50 XP por marco de jornalista, 50 XP por bug aprovado, 20 XP de bónus para quem faz referral.
+- Medalha de Herói de Batalha: 25 Gold + 100 XP (5x o valor da medalha de ronda), só para o lado vencedor.
+- Likes de artigo: pagamento incremental (1 Gold a cada 20 likes cruzados), evitando duplicar pagamentos sobre os mesmos likes.
+- Marcos de subscritores: bónus único por patamar (não recorrente), registado em `journalist_milestones` para nunca pagar duas vezes o mesmo patamar.
+- Referral: XP acumulado (`users.xp`) escolhido como base do "nível" em vez de `total_damage` (que é só militar) — por isso também mudei o desempate das eleições de `total_damage` para `xp`, para ficar consistente com a tua ideia de "uniformizar" o jogo em vez de focar só em militar.
+- Sem limite ao nº de artigos que um jogador pode escrever, nem verificação de qualidade dos artigos.
+- Taxa de reporte de bugs sem limite (pode reportar quantos quiser; só ganha Gold nos que o Admin aprovar).
+
+**Bug encontrado e corrigido durante os testes**: o contador de rondas ganhas (`attacker_rounds_won`/`defender_rounds_won`) não ficava gravado corretamente na ronda que decide a batalha (ficava sempre 1 abaixo do valor real, ex: mostrava 4-0 numa vitória por 5-0). Corrigido para gravar o resultado da ronda imediatamente, antes de verificar se a batalha terminou.
+
+Testado: XP por treinar/trabalhar/lutar, curva de níveis, bónus de entrada no Congresso/Presidente, medalhas de ronda e de Herói de Batalha (incluindo a correção do bug), like de artigo com pagamento a cada 20 likes, marco de subscritores, reportar bug + aprovação do Admin, referral com bónus ao atingir nível 5 (e não repetir).
+
 ## Próximas decisões pendentes
 
 - Sistema de alianças internacionais (poder do Secretary of State).
 - Ajustar carteiras multi-moeda para permitir comércio entre países no Mercado.
+- Mais fontes dinâmicas de Gold/XP (sugestões por explorar): bónus de "primeira vez" (primeira empresa, primeira batalha, primeiro voto), streak de dias consecutivos ativo, "cidadão da semana" por país.

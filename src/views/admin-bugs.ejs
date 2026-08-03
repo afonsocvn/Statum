@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Statum - Admin: Bug Reports</title>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <%- include('partials/nav') %>
+
+  <main>
+    <h1>Admin: Bug Reports</h1>
+
+    <table>
+      <thead>
+        <tr><th>Reporter</th><th>Description</th><th>Status</th><th></th></tr>
+      </thead>
+      <tbody>
+        <% reports.forEach(function(r) { %>
+          <tr>
+            <td><%= r.reporterUsername %></td>
+            <td><%= r.description %></td>
+            <td><%= r.status %></td>
+            <td>
+              <% if (r.status === 'pending') { %>
+                <form action="/admin/bugs/<%= r.id %>/reward" method="POST" style="display:inline">
+                  <button type="submit">Reward (10 Gold)</button>
+                </form>
+                <form action="/admin/bugs/<%= r.id %>/reject" method="POST" style="display:inline">
+                  <button type="submit">Reject</button>
+                </form>
+              <% } %>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </main>
+</body>
+</html>

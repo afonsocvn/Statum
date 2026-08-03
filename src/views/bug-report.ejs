@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Statum - Report a bug</title>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <%- include('partials/nav') %>
+
+  <main>
+    <h1>Report a bug</h1>
+    <p>If a real bug is confirmed, you'll be rewarded 10 Gold.</p>
+
+    <% if (error) { %>
+      <p style="color: red;"><%= error %></p>
+    <% } %>
+
+    <form action="/bugs/report" method="POST">
+      <div>
+        <label for="description">Describe the bug</label>
+        <textarea id="description" name="description" rows="6" required></textarea>
+      </div>
+      <button type="submit">Submit report</button>
+    </form>
+  </main>
+</body>
+</html>

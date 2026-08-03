@@ -1,6 +1,7 @@
 const express = require('express');
 const db = require('../db');
 const { resolveHit, HP_PER_HIT, MAX_HP, FOOD_HP_RESTORE, getRank } = require('../lib/military');
+const { awardXp, XP_HIT } = require('../lib/xp');
 
 const router = express.Router();
 
@@ -76,12 +77,22 @@ router.get('/battles/:id', (req, res, next) => {
     else if (res.locals.currentUser.countryId === battle.defender_country_id) side = 'defender';
   }
 
+  const medals = db
+    .prepare(
+      `SELECT medals.*, users.username
+       FROM medals JOIN users ON users.id = medals.user_id
+       WHERE medals.battle_id = ?
+       ORDER BY medals.round_number IS NULL, medals.round_number DESC, medals.created_at DESC`
+    )
+    .all(battle.id);
+
   res.render('battle', {
     battle,
     side,
     skills,
     weaponStock,
     foodStock,
+    medals,
     hitBatchSizes: HIT_BATCH_SIZES,
     rank: res.locals.currentUser ? getRank(res.locals.currentUser.totalDamage) : null,
     error: ERROR_MESSAGES[req.query.error] || null,
@@ -172,6 +183,7 @@ router.post('/battles/:id/hit', requireLogin, (req, res, next) => {
     ).run(battle.id, battle.round_number, user.id, side, hits, totalDamage);
   });
   applyHit();
+  awardXp(user.id, hits * XP_HIT);
 
   res.redirect(`/battles/${battle.id}?dealt=${totalDamage}`);
 });

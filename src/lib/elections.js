@@ -9,9 +9,13 @@
 // Tie-breaks use total_damage as a stand-in for "experience" (no separate
 // XP stat exists yet).
 
+const { awardXp, XP_CONGRESS, XP_PRESIDENT } = require('./xp');
+
 const CONGRESS_ELECTION_DAY = 15;
 const MIN_CONGRESS_SEATS = 5;
 const CANDIDACY_FEE_GOLD = 20;
+const CONGRESS_ENTRY_GOLD = 10;
+const PRESIDENT_ENTRY_GOLD = 20;
 
 function daysInMonth(year, monthIndex) {
   return new Date(year, monthIndex + 1, 0).getDate();
@@ -64,7 +68,7 @@ function tallyOffice(db, countryId, office, termStart, seatCount) {
 
   const candidates = db
     .prepare(
-      `SELECT candidacies.id AS candidacy_id, candidacies.user_id, users.total_damage
+      `SELECT candidacies.id AS candidacy_id, candidacies.user_id, users.xp
        FROM candidacies
        JOIN users ON users.id = candidacies.user_id
        WHERE candidacies.country_id = ? AND candidacies.office = ? AND candidacies.term_start = ?`
@@ -88,7 +92,7 @@ function tallyOffice(db, countryId, office, termStart, seatCount) {
 
   const ranked = candidates
     .map((c) => ({ ...c, votes: votesByCandidacy[c.candidacy_id] || 0 }))
-    .sort((a, b) => b.votes - a.votes || b.total_damage - a.total_damage);
+    .sort((a, b) => b.votes - a.votes || b.xp - a.xp);
 
   const winners = office === 'president' ? ranked.slice(0, 1) : ranked.slice(0, seatCount);
   const role = office === 'president' ? 'president' : 'congress_member';
@@ -106,7 +110,16 @@ function tallyOffice(db, countryId, office, termStart, seatCount) {
     const insert = db.prepare(
       'INSERT INTO offices (country_id, role, user_id, term_start) VALUES (?, ?, ?, ?)'
     );
-    winners.forEach((winner) => insert.run(countryId, role, winner.user_id, termStart));
+    const addGold = db.prepare('UPDATE users SET gold = gold + ? WHERE id = ?');
+
+    const entryGold = role === 'president' ? PRESIDENT_ENTRY_GOLD : CONGRESS_ENTRY_GOLD;
+    const entryXp = role === 'president' ? XP_PRESIDENT : XP_CONGRESS;
+
+    winners.forEach((winner) => {
+      insert.run(countryId, role, winner.user_id, termStart);
+      addGold.run(entryGold, winner.user_id);
+      awardXp(winner.user_id, entryXp);
+    });
 
     if (role === 'president') {
       db.prepare('UPDATE countries SET president_user_id = ? WHERE id = ?').run(winners[0].user_id, countryId);

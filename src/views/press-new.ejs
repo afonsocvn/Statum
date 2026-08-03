@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Statum - Write an article</title>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <%- include('partials/nav') %>
+
+  <main>
+    <h1>Write an article</h1>
+
+    <% if (error) { %>
+      <p style="color: red;"><%= error %></p>
+    <% } %>
+
+    <form action="/press" method="POST">
+      <div>
+        <label for="title">Title</label>
+        <input type="text" id="title" name="title" required>
+      </div>
+      <div>
+        <label for="body">Body</label>
+        <textarea id="body" name="body" rows="10" required></textarea>
+      </div>
+      <button type="submit">Publish</button>
+    </form>
+
+    <p><a href="/press">← Back to Press</a></p>
+  </main>
+</body>
+</html>
